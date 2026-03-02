@@ -1,0 +1,31 @@
+@use '../../../../styles/variables' as *;
+
+.header {
+  height: 100px;
+  width: 100%;
+  @include flex-layout(row, center, center);
+
+  &__wrapper {
+    @include flex-layout(row, space-between, center);
+    width: 100%;
+  }
+
+  &__logo-area {
+    @include flex-layout(row, center, center);
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__logo-img {
+    height: 60px;
+    width: auto;
+  }
+
+  &__action {
+    @include flex-layout(row, center, center);
+  }
+}

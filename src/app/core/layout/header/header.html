@@ -1,1 +1,10 @@
-<p>header works!</p>
+<header class="header">
+  <div class="container header__wrapper">
+    <a routerLink="/" class="header__logo-area">
+      <img src="assets/logo/logo.svg" alt="Poll app logo" class="header__logo-img">
+    </a>
+    <div class="header__action">
+      <ng-content select="[rightSide]"></ng-content>
+    </div>
+  </div>
+</header>

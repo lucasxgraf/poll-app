@@ -11,10 +11,18 @@ $font-mulish: Mulish, sans-serif;
 $font-nerko-one: Nerko One, sans-serif;
 
 
-@mixin flex-center($direction: column, $gap: 0px) {
+@mixin flex-layout($direction: row, $justify: center, $align: center, $gap: 0px) {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
   gap: $gap;
+}
+
+@mixin absolute-pos($top: auto, $right: auto, $bottom: auto, $left: auto) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
 }

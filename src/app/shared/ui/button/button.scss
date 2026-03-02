@@ -9,7 +9,7 @@
   --btn-font-size: 1rem;
   --btn-text-decoration: none;
 
-  @include flex-center(row, 8px);
+  @include flex-layout(row, center, center, 8px);
   
   padding: var(--btn-padding);
   background-color: var(--btn-bg);

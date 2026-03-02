@@ -7,7 +7,7 @@
   --badge-padding: 8px 16px 8px 12px;
   --width: fit-content;
 
-  @include flex-center();
+  @include flex-layout();
   
   padding: var(--badge-padding);
   background-color: var(--badge-bg);

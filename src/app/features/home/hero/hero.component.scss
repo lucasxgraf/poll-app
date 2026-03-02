@@ -1,0 +1,86 @@
+@use '../../../../styles/variables' as *;
+
+.hero {
+  height: calc(100vh - 100px);
+  overflow: hidden;
+
+  &__wrapper {
+    @include flex-layout(row, space-between, center, 40px);
+    height: calc(100% - 100px);
+  }
+
+  &__content {
+    @include flex-layout(column, center, flex-start, 40px);
+
+    h1 {
+      font-size: 5rem;
+      font-family: $font-nerko-one;
+      font-weight: 900;
+      color: $color-accent;
+    }
+  }
+
+  &__description {
+    font-size: 1.5rem;
+    font-family: $font-mulish;
+    max-width: 600px;
+  }
+
+  &__visual {
+    flex: 1;
+    @include flex-layout(row, center, center);
+  }
+
+  &__visual-container {
+    position: relative;
+    width: fit-content;
+    @include flex-layout(row, center, center);
+  }
+
+  &__main-mobile {
+    max-width: 380px;
+    height: auto;
+    z-index: 1;
+  }
+
+  &__icon {
+    position: absolute;
+    z-index: 2;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+    pointer-events: none;
+
+    &--typing {
+      @include absolute-pos($top: 5%, $left: -25%);
+      width: 150px;
+      animation: float-y 5s ease-in-out infinite;
+    }
+
+    &--check {
+      @include absolute-pos($bottom: 20%, $left: -15%);
+      width: 80px;
+      animation: float-y 4s ease-in-out infinite reverse;
+    }
+
+    &--star {
+      @include absolute-pos($bottom: 10%, $right: -10%);
+      width: 70px;
+      animation: float-rotate 6s ease-in-out infinite 0.5s;
+    }
+
+    &--question {
+      @include absolute-pos($top: 15%, $right: -15%);
+      width: 90px;
+      animation: float-y 7s ease-in-out infinite 1s;
+    }
+  }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-rotate {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-25px) rotate(10deg); }
+}
