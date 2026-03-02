@@ -1,0 +1,83 @@
+@use '../../../../styles/variables' as *;
+
+.ui-btn {
+  --btn-bg: #{$color-primary};
+  --btn-color: #{$color-text-dark};
+  --btn-radius: 10px;
+  --btn-padding: 12px 16px;
+  --btn-border: none;
+  --btn-font-size: 1rem;
+  --btn-text-decoration: none;
+
+  @include flex-center(row, 8px);
+  
+  padding: var(--btn-padding);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border-radius: var(--btn-radius);
+  border: var(--btn-border);
+  
+  font-family: 'Nokora', sans-serif;
+  font-weight: 700;
+  font-size: var(--btn-font-size);
+  text-decoration: var(--btn-text-decoration);
+  
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    &:hover:not(:disabled) {
+      --btn-bg: #{$color-accent};
+    }
+  }
+
+  &--secondary {
+    --btn-bg: #{rgba($color-accent, 0.4)};
+    --btn-color: #{$color-bg-white};
+
+    &:hover:not(:disabled) {
+      --btn-bg: #{rgba($color-accent, 0.6)};
+    }
+  }
+
+  &--tertiary {
+    --btn-bg: transparent;
+    --btn-color: #{$color-bg-white};
+    --btn-text-decoration: underline;
+    --btn-padding: 8px 12px;
+    
+    &:hover:not(:disabled) {
+      --btn-color: #{$color-accent};
+    }
+  }
+
+  &--filter {
+    --btn-bg: #{$color-bg-card};
+    --btn-color: #{$color-text-dark};
+    --btn-radius: 20px;
+    --btn-padding: 8px 16px;
+    font-weight: 500;
+
+    &:hover:not(:disabled) {
+      --btn-bg: #{$color-primary};
+    }
+
+    &:active:not(:disabled) {
+      --btn-bg: #{$color-accent};
+    }
+  }
+}

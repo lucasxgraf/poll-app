@@ -1,5 +1,15 @@
 @use './styles/variables' as *;
 
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  font-family: $font-mulish;
+  color: white;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
 @font-face {
   font-display: swap;
   font-family: 'Nokora';
@@ -48,7 +58,7 @@
   font-family: 'Nerko One';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/nerko-one-v17-latin-regular.woff2') format('woff2');
+  src: url('../public/assets/fonts/nerko-one-v17-latin-regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -56,42 +66,42 @@
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/mulish-v18-latin-regular.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-regular.woff2') format('woff2');
 }
 @font-face {
   font-display: swap;
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 500;
-  src: url('../fonts/mulish-v18-latin-500.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-500.woff2') format('woff2');
 }
 @font-face {
   font-display: swap;
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 600;
-  src: url('../fonts/mulish-v18-latin-600.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-600.woff2') format('woff2');
 }
 @font-face {
   font-display: swap;
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 700;
-  src: url('../fonts/mulish-v18-latin-700.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-700.woff2') format('woff2');
 }
 @font-face {
   font-display: swap;
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 800;
-  src: url('../fonts/mulish-v18-latin-800.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-800.woff2') format('woff2');
 }
 @font-face {
   font-display: swap;
   font-family: 'Mulish';
   font-style: normal;
   font-weight: 900;
-  src: url('../fonts/mulish-v18-latin-900.woff2') format('woff2');
+  src: url('../public/assets/fonts/mulish-v18-latin-900.woff2') format('woff2');
 }
 
 .container {
