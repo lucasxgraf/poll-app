@@ -1,1 +1,101 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/variables' as *;
+
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../public/assets/fonts/nokora-v34-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../public/assets/fonts/nokora-v34-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../public/assets/fonts/nokora-v34-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../public/assets/fonts/nokora-v34-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../public/assets/fonts/nokora-v34-latin-800.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Nokora';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../public/assets/fonts/nokora-v34-latin-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Nerko One';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/nerko-one-v17-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/mulish-v18-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/mulish-v18-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/mulish-v18-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/mulish-v18-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../fonts/mulish-v18-latin-800.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Mulish';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../fonts/mulish-v18-latin-900.woff2') format('woff2');
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
