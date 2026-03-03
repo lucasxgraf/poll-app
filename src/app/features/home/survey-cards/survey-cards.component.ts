@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Survey } from '../../../shared/models/poll.interface';
 import { SurveyCardComponent } from '../../../shared/components/survey-card/survey-card';
 import { PollService } from '../../../core/services/poll.service';
 

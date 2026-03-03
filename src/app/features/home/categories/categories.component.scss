@@ -1,0 +1,41 @@
+@use '../../../../styles/variables' as *;
+
+.categories {
+  padding: 40px 0;
+  background-color: $color-bg-purple;
+
+  &__controls {
+    @include flex-layout(row, space-between, center, 20px);
+    margin-bottom: 40px;
+    width: 100%;
+  }
+
+  &__filter {
+    @include flex-layout(row, flex-start, center, 16px);
+  }
+
+  &__sort {
+    @include flex-layout(row, flex-end, center, 12px);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    width: 100%;
+  }
+
+  &__empty-state {
+    grid-column: 1 / -1; 
+    @include flex-layout(column, center, center, 20px);
+    padding: 80px 0;
+    color: $color-bg-white;
+    text-align: center;
+    font-family: $font-mulish;
+
+    p {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+  }
+}

@@ -1,19 +1,11 @@
 @use '../../../../styles/variables' as *;
 
 .survey-card {
-  background-color: $color-bg-card;
-  border-top-right-radius: 80px;
-  padding: 40px 24px;
-  height: 300px;
   @include flex-layout(column, space-between, flex-start, 16px);
   transition: transform 0.3s ease, 
     box-shadow 0.2s ease;
   cursor: pointer;
-
-  &:hover {
-    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-    background-color: $color-bg-light-purple;
-  }
+  width: 100%;
 
   &__body {
     @include flex-layout(column, center, flex-start, 16px);
@@ -30,5 +22,51 @@
     font-weight: 700;
     font-family: $font-mulish;
     color: $color-text-dark;
+  }
+
+  &--highlight {
+    height: 300px;
+    padding: 40px 32px;
+    background-color: $color-bg-card;
+    border-top-right-radius: 80px;
+    padding: 40px 24px;
+    height: 300px;
+
+    &:hover {
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      background-color: $color-bg-light-purple;
+    }
+  }
+
+  &--list {
+    min-height: 150px;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 8px 56px 8px 8px;
+    background-color: $color-bg-light-purple-card;
+
+    .survey-card__category { 
+        color: $color-accent;
+    }
+
+    .survey-card__title { 
+      color: $color-bg-white;
+    }
+
+    .survey-card__footer {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    app-badge {
+      display: inline-block;
+      --badge-padding: 4px 10px; // Weniger Padding
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      background-color: rgba($color-bg-light-purple, 16%);
+    }
   }
 }

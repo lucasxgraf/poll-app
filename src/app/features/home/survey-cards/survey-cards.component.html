@@ -7,10 +7,10 @@
     </header>
 
     <div class="survey__grid">
-      @for (item of surveys(); track item.id) {
+      @for (item of surveys().slice(0,3); track item.id) {
         <app-survey-card 
           [survey]="item" 
-          [isHighlight]="true">
+          >
         </app-survey-card>
       } @empty {
         <p>No surveys found.</p>

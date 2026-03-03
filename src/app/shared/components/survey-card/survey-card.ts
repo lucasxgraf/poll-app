@@ -11,5 +11,6 @@ import { Survey } from '../../models/poll.interface';
 })
 export class SurveyCardComponent {
   survey = input.required<Survey>();
-  isHighlight = input<boolean>(false);
+
+  variant = input<'highlight' | 'list'>('highlight'); 
 }

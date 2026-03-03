@@ -1,1 +1,38 @@
-<p>categories works!</p>
+<section class="categories">
+  <div class="container">
+    
+    <div class="categories__controls">
+      <div class="categories__filter">
+        <app-button 
+          [variant]="currentFilter() === 'active' ? 'primary' : 'filter'" 
+          (click)="setFilter('active')">
+          Active survey
+        </app-button>
+        
+        <app-button 
+          [variant]="currentFilter() === 'past' ? 'primary' : 'filter'" 
+          (click)="setFilter('past')">
+          Past survey
+        </app-button>
+      </div>
+
+      <div class="categories__sort">
+         <!-- <app-dropdown>Sort by categories</app-dropdown> -->
+      </div>
+    </div>
+
+    <div class="categories__grid">
+      @for (item of filteredSurveys(); track item.id) {
+        <app-survey-card 
+          [survey]="item" 
+          variant="list">
+        </app-survey-card>
+      } @empty {
+        <div class="categories__empty-state">
+          <p>Currently there are no surveys in this category.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
