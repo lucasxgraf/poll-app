@@ -17,7 +17,22 @@
       </div>
 
       <div class="categories__sort">
-         <!-- <app-dropdown>Sort by categories</app-dropdown> -->
+        <div class="categories__dropdown">
+          <app-button variant="tertiary" (click)="toggleDropdown()">
+            {{ selectedCategory() }}
+            <img src="assets/svg/arrow_drop_down.svg" alt="icon dropdown" class="categories__dropdown-icon" [class.categories__dropdown-icon--open]="isDropdownOpen()">
+          </app-button>
+
+          @if (isDropdownOpen()) {
+            <ul class="categories__dropdown-menu">
+              @for (category of categoryOptions(); track category) {
+                <li class="categories__dropdown-item" (click)="selectCategory(category)">
+                  {{ category }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
       </div>
     </div>
 

@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Survey } from '../../shared/models/poll.interface';
+import { Survey, Category } from '../../shared/models/poll.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,17 +11,32 @@ export class PollService {
   private surveysSignal = signal<Survey[]>([]);
   surveys = this.surveysSignal.asReadonly();
 
-  async fetchAllSurveys() {
-  const { data, error } = await this.supabase
-    .from('surveys')
-    .select('*');
+  private categoriesSignal = signal<Category[]>([]);
+  categories = this.categoriesSignal.asReadonly();
 
-  if (error) {
-    console.error('Supabase Error:', error);
-    return;
+  async fetchAllSurveys() {
+    const { data, error } = await this.supabase
+      .from('surveys')
+      .select('*');
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      return;
+    }
+    this.surveysSignal.set(data as Survey[]);
   }
 
-  console.log('Empfangene Daten:', data);
-  this.surveysSignal.set(data as Survey[]);
-}
+  async fetchCategories() {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error categories:', error);
+      return;
+    }
+
+    this.categoriesSignal.set(data as Category[]);
+  }
 }

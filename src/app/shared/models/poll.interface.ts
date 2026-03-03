@@ -22,3 +22,8 @@ export interface PollOption {
   poll_id: string;
   label: string;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+}
