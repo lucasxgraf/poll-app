@@ -1,9 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SurveyInterface } from '../../../shared/models/survey.interface';
+import { Survey } from '../../../shared/models/poll.interface';
 import { SurveyCardComponent } from '../../../shared/components/survey-card/survey-card';
-
-
+import { PollService } from '../../../core/services/poll.service';
 
 @Component({
   selector: 'app-survey-cards-component',
@@ -12,28 +11,12 @@ import { SurveyCardComponent } from '../../../shared/components/survey-card/surv
   templateUrl: './survey-cards.component.html',
   styleUrl: './survey-cards.component.scss',
 })
-export class SurveyCardsComponent {
-  surveys = signal<SurveyInterface[]>([
-    {
-      id: '1',
-      title: "Let's Plan the Next Team Event Together",
-      category: 'Team activities',
-      endDate: 'Ends in 1 Day',
-      status: 'active'
-    },
-    {
-      id: '2',
-      title: 'Fit & wellness survey!',
-      category: 'Health & Wellness',
-      endDate: 'Ends in 2 Days',
-      status: 'active'
-    },
-    {
-      id: '3',
-      title: 'Gaming habits and favorite games!',
-      category: 'Gaming & Entertainment',
-      endDate: 'Ends in 3 Days',
-      status: 'active'
-    },
-  ]);
+export class SurveyCardsComponent implements OnInit{
+
+  private pollService = inject(PollService);
+  surveys = this.pollService.surveys;
+
+  ngOnInit(): void {
+    this.pollService.fetchAllSurveys()
+  }
 }
