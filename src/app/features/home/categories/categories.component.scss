@@ -15,9 +15,9 @@
 
     ::ng-deep app-button {
       .ui-btn {
-        padding: 8px 18px !important; // Exakt gleiches Maß für beide
-        border-radius: 40px !important; // Beide so rund wie der Filter-Button
-        height: 40px; // Feste Höhe verhindert jedes Wackeln
+        padding: 8px 18px !important;
+        border-radius: 40px !important;
+        height: 40px;
       }
     }
   }
@@ -32,8 +32,8 @@
 
     ::ng-deep app-button {
       .ui-btn--tertiary {
-        text-decoration: none !important; // Weg mit dem Unterstrich
-        color: $color-bg-white !important; // Weißer Text
+        text-decoration: none !important;
+        color: $color-bg-white !important; 
         padding: 8px 0 !important;
 
         &:hover {
