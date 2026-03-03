@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { BadgeComponent } from '../../ui/badge/badge';
-import { SurveyInterface } from '../../models/survey.interface';
+import { Survey } from '../../models/poll.interface';
 
 @Component({
   selector: 'app-survey-card',
@@ -10,6 +10,7 @@ import { SurveyInterface } from '../../models/survey.interface';
   styleUrl: './survey-card.scss',
 })
 export class SurveyCardComponent {
-  survey = input.required<SurveyInterface>();
-  isHighlight = input<boolean>(false);
+  survey = input.required<Survey>();
+
+  variant = input<'highlight' | 'list'>('highlight'); 
 }

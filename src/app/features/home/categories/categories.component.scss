@@ -1,0 +1,108 @@
+@use '../../../../styles/variables' as *;
+
+.categories {
+  padding: 40px 0;
+  background-color: $color-bg-purple;
+
+  &__controls {
+    @include flex-layout(row, space-between, center, 20px);
+    margin-bottom: 40px;
+    width: 100%;
+  }
+
+  &__filter {
+    @include flex-layout(row, flex-start, center, 16px);
+
+    ::ng-deep app-button {
+      .ui-btn {
+        padding: 8px 18px !important; // Exakt gleiches Maß für beide
+        border-radius: 40px !important; // Beide so rund wie der Filter-Button
+        height: 40px; // Feste Höhe verhindert jedes Wackeln
+      }
+    }
+  }
+
+  &__sort {
+    @include flex-layout(row, flex-end, center, 12px);
+  }
+  
+  &__dropdown {
+    position: relative;
+    display: inline-block;
+
+    ::ng-deep app-button {
+      .ui-btn--tertiary {
+        text-decoration: none !important; // Weg mit dem Unterstrich
+        color: $color-bg-white !important; // Weißer Text
+        padding: 8px 0 !important;
+
+        &:hover {
+          color: $color-accent !important;
+          text-decoration: none !important;
+        }
+      }
+    }
+    
+    &-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      
+      &--open {
+        transform: rotate(180deg);
+      }
+    }
+
+    &-menu {
+      @include absolute-pos($top: 110%, $right: 0);
+      min-width: 230px;
+      background-color: $color-bg-purple;
+      border: 1px solid rgba($color-bg-white, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      list-style: none;
+      overflow: hidden;
+    }
+
+    &-item {
+      padding: 12px 16px;
+      color: $color-bg-white;
+      font-family: $font-mulish;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: rgba($color-accent, 0.2);
+        color: $color-accent;
+        padding-left: 20px;
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid rgba($color-bg-white, 0.05);
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    width: 100%;
+  }
+
+  &__empty-state {
+    grid-column: 1 / -1; 
+    @include flex-layout(column, center, center, 20px);
+    padding: 80px 0;
+    color: $color-bg-white;
+    text-align: center;
+    font-family: $font-mulish;
+
+    p {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+  }
+
+
+}
