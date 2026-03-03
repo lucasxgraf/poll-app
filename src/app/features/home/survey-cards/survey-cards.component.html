@@ -1,0 +1,21 @@
+<section>
+  <div class="container">
+    <h2>Surveys</h2>
+    
+    <header>
+      <h3 class="survey__title">Ending soon surveys</h3>
+    </header>
+
+    <div class="survey__grid">
+      @for (item of surveys(); track item.id) {
+        <app-survey-card 
+          [survey]="item" 
+          [isHighlight]="true">
+        </app-survey-card>
+      } @empty {
+        <p>No surveys found.</p>
+      }
+    </div>
+
+  </div>
+</section>

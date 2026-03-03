@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type BadgeVariant = 'published' | 'draft';
+export type BadgeVariant = 'primary' | 'secondary';
 
 @Component({
   selector: 'app-badge',
@@ -11,5 +11,5 @@ export type BadgeVariant = 'published' | 'draft';
   styleUrl: './badge.scss'
 })
 export class BadgeComponent {
-  variant = input<BadgeVariant>('published');
+  variant = input<BadgeVariant>('secondary');
 }

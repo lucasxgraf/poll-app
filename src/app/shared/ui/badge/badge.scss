@@ -19,14 +19,18 @@
   font-weight: 600;
   font-size: var(--badge-font-size);
   white-space: nowrap;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 
-  &--published {
+  &--primary {
     --badge-bg: #{$color-accent};
-    --badge-color: #{$color-text-dark};
   }
 
-  &--draft {
+  &--secondary {
     --badge-bg: #{$color-light-accent}; 
-    --badge-color: #{$color-text-dark};
   }
+}
+
+:host-context(.survey-card:hover) .ui-badge {
+  background-color: $color-accent;
+  color: $color-text-dark;
 }
