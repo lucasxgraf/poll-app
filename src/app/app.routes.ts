@@ -4,7 +4,7 @@ import { LegalComponent } from './features/legal/legal';
 import { PrivacyComponent } from './features/privacy/privacy';
 
 export const routes: Routes = [
-  { path:"", component: HomeComponent},
+  { path: "", component: HomeComponent},
   { path: 'legal', component: LegalComponent },
   { path: 'privacy', component: PrivacyComponent },
 ];
