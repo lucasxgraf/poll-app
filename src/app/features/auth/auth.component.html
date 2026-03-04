@@ -1,1 +1,42 @@
-<p>auth.component works!</p>
+<section class="auth">
+  <div class="auth__card">
+    <h1 class="auth__title">
+      {{ isLoginMode() ? 'Welcome' : 'Create Account' }}
+    </h1>
+    
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth__form">
+      <div class="auth__field">
+        <label class="auth__label">Email</label>
+        <input 
+          type="email" 
+          class="auth__input" 
+          formControlName="email" 
+          placeholder="your-email@example.com">
+      </div>
+
+      <div class="auth__field">
+        <label class="auth__label">Password</label>
+        <input 
+          type="password" 
+          class="auth__input" 
+          formControlName="password" 
+          placeholder="Min. 6 characters">
+      </div>
+
+      @if (errorMessage()) {
+        <p class="auth__error-message">{{ errorMessage() }}</p>
+      }
+
+      <app-button 
+        type="submit" 
+        variant="primary" 
+        [disabled]="authForm.invalid || isLoading()">
+        {{ isLoading() ? 'Loading...' : (isLoginMode() ? 'Login' : 'Sign Up') }}
+      </app-button>
+    </form>
+
+    <button type="button" class="auth__toggle-btn" (click)="toggleMode()">
+      {{ isLoginMode() ? "Don't have an account? Sign up here" : "Already have an account? Login here" }}
+    </button>
+  </div>
+</section>
