@@ -1,0 +1,50 @@
+@use '../../../styles/variables' as *;
+
+:host {
+  display: block;
+  background-color: $color-bg-purple;
+  min-height: calc(100vh - 100px - 188px);
+}
+
+.legal-page {
+  padding: 40px 0 ;
+  color: $color-bg-white;
+  font-family: $font-mulish;
+
+
+  &__title {
+    font-family: $font-nerko-one;
+    font-size: 4rem;
+    color: $color-accent;
+    margin-bottom: 56px;
+    text-align: center;
+
+    @media (max-width: 580px) {
+        font-size: 3rem;
+      }
+  }
+
+  &__section {
+    margin-bottom: 40px;
+    
+    h2 {
+      font-size: 2rem;
+      color: $color-primary;
+      margin-bottom: 16px;
+      font-weight: 700;
+
+      @media (max-width: 580px) {
+        font-size: 1.5rem;
+      }
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    address {
+      font-style: normal;
+      line-height: 1.5;
+    }
+  }
+}
