@@ -1,0 +1,76 @@
+@use '../../../styles/variables' as *;
+
+.legal-page {
+  padding: 80px 0;
+  color: $color-bg-white;
+  background-color: $color-bg-purple;
+
+  &__header {
+    border-bottom: 1px solid rgba($color-bg-white, 0.1);
+    padding-bottom: 40px;
+  }
+
+  &__title {
+    font-family: $font-nerko-one;
+    font-size: 4rem;
+    color: $color-accent;
+    margin-bottom: 16px;
+  }
+
+  &__intro {
+    opacity: 0.5;
+    font-style: italic;
+  }
+
+  &__content {
+    h2 {
+      font-size: 2rem;
+      color: $color-primary;
+      margin: 40px 0 24px;
+      font-weight: 800;
+      border-left: 4px solid $color-primary;
+      padding-left: 16px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: $color-bg-white;
+      margin: 32px 0 16px;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 1rem;
+      color: $color-accent;
+      margin: 24px 0 12px;
+      font-weight: 700;
+    }
+
+    p {
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      margin-bottom: 24px;
+      padding-left: 24px;
+
+      li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+        list-style-type: square;
+        color: $color-bg-white;
+      }
+    }
+
+    a {
+      color: $color-primary;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: $color-accent;
+      }
+    }
+  }
+}
