@@ -26,14 +26,28 @@ export class AuthComponent {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+  get emailCtrl() { 
+    return this.authForm.controls.email; 
+  }
+  
+    get passCtrl() { 
+    return this.authForm.controls.password; 
+  }
+
   toggleMode() {
     this.isLoginMode.update(value => !value);
     this.errorMessage.set(null);
   }
 
+  shouldShowError(control: any): boolean {
+    return control.invalid && (control.touched || control.dirty);
+  }
+
   async onSubmit() {
-    if (this.authForm.invalid) 
+    if (this.authForm.invalid) {
+      this.authForm.markAllAsTouched();
       return;
+    }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
