@@ -4,11 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ButtonComponent } from '../../shared/ui/button/button';
+import { InputFieldComponent } from "../../shared/components/input-field/input-field.component";
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, InputFieldComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })
@@ -37,10 +38,6 @@ export class AuthComponent {
   toggleMode() {
     this.isLoginMode.update(value => !value);
     this.errorMessage.set(null);
-  }
-
-  shouldShowError(control: any): boolean {
-    return control.invalid && (control.touched || control.dirty);
   }
 
   async onSubmit() {

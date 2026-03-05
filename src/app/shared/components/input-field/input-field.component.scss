@@ -1,0 +1,62 @@
+@use '../../../../styles/variables' as *;
+
+.input-field {
+  width: 100%;
+  @include flex-layout(column, flex-start, stretch, 4px);
+
+  &__label {
+    font-weight: 700;
+    font-size: 1rem;
+    color: $color-text-dark;
+    padding-left: 4px;
+  }
+
+  &__wrapper {
+    @include flex-layout(row, flex-start, center);
+    background-color: rgba($color-bg-white, 0.6);
+    border-radius: 5px 30px 5px 5px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+    min-height: 56px;
+
+    &:focus-within {
+      background-color: $color-light-accent; 
+      border-color: transparent;
+    }
+  }
+
+  &__control {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    background: transparent;
+    color: $color-text-dark;
+    outline: none;
+
+    &::placeholder {
+      color: rgba($color-text-dark, 0.4);
+    }
+  }
+
+  &__action {
+    padding-right: 12px;
+    @include flex-layout(row, center, center);
+  }
+
+  &__error-area {
+    height: 20px;
+    padding-right: 8px;
+    text-align: right;
+  }
+
+  &__error-text {
+    color: $color-error;
+    font-weight: 600;
+  }
+
+  &--error {
+    .input-field__wrapper {
+      border-color: $color-error;
+    }
+  }
+}

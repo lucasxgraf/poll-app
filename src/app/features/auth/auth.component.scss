@@ -6,7 +6,7 @@
   background-color: $color-bg-purple;
 
   &__card {
-    background-color: $color-bg-card;
+    background-color: $color-bg-light-purple;
     padding: 48px;
     width: 100%;
     max-width: 600px;
@@ -26,58 +26,18 @@
     @include flex-layout(column, flex-start, stretch, 24px);
   }
 
-  &__field {
-    @include flex-layout(column, flex-start, stretch, 8px);
-  }
-
-  &__label {
-    font-weight: 700;
-    color: $color-text-dark;
-  }
-
-  &__input {
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba($color-text-dark, 0.15);
-    background-color: $color-bg-white;
-    color: $color-text-dark;
-
-    &:focus {
-      outline: none;
-      border-color: $color-accent;
-      box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
-    }
-  }
-
-  &__error-message {
-    border-color: #e74c3c;
-  }
-
-  &__error-container {
-    height: 24px;
-    font-weight: 600;
-    text-align: right;
-
-    span {
-      color: #e74c3c
-    }
-  }
-
-  &__supabase-error-container{
+  &__supabase-container{
     @include flex-layout(row, space-between, center, 16px);
-    flex: 1;
   }
 
   &__supabase-error {
-    min-height: 48px;
+    @include flex-layout(row, center, center);
+    height: 45px;
     font-weight: 700;
     color: #e74c3c;
-    background: rgba(#e74c3c, 0.1);
-    padding: 16px;
+    background: rgba($color-error, 0.1);
+    padding: 0 16px;
     border-radius: 8px;
-    text-align: center;
-    margin: 8px 0;
-    opacity: 0;
     transition: opacity 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 
