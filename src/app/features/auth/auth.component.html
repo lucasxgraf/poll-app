@@ -1,0 +1,51 @@
+<section class="auth">
+  <div class="auth__card">
+    <h1 class="auth__title">
+      {{ isLoginMode() ? 'Welcome' : 'Create Account' }}
+    </h1>
+
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth__form">
+      <div class="auth__field">
+        <label class="auth__label">Email Address</label>
+        <input type="email" class="auth__input" [class.auth__input--error]="shouldShowError(emailCtrl)"
+          formControlName="email" placeholder="your@example.com">
+
+        <div class="auth__error-container">
+          @if (shouldShowError(emailCtrl)) {
+          @if (emailCtrl.errors?.['required']) { <span>Email is required</span> }
+          @else if (emailCtrl.errors?.['email']) { <span>Invalid email format</span> }
+          }
+        </div>
+      </div>
+
+      <div class="auth__field">
+        <label class="auth__label">Password</label>
+        <input type="password" class="auth__input" [class.auth__input--error]="shouldShowError(passCtrl)"
+          formControlName="password" placeholder="Please enter your password">
+
+        <div class="auth__error-container">
+          @if (shouldShowError(passCtrl)) {
+          @if (passCtrl.errors?.['required'])
+          { <span>Password is required</span> }
+          @else if (passCtrl.errors?.['minlength'])
+          { <span>Min. 6 characters</span> }
+          }
+        </div>
+      </div>
+
+      <div class="auth__supabase-error-container">
+        <app-button type="submit" variant="primary" [disabled]="authForm.invalid || isLoading()">
+          {{ isLoading() ? 'Loading...' : (isLoginMode() ? 'Login' : 'Sign Up') }}
+        </app-button>
+
+        <div class="auth__supabase-error" [class.auth__supabase-error--visible]="errorMessage()">
+          {{ errorMessage() }}
+        </div>
+      </div>
+    </form>
+
+    <button type="button" class="auth__toggle-btn" (click)="toggleMode()">
+      {{ isLoginMode() ? "Don't have an account? Sign up here" : "Already have an account? Login here" }}
+    </button>
+  </div>
+</section>

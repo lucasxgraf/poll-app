@@ -1,0 +1,109 @@
+@use '../../../styles/variables' as *;
+
+.auth {
+  height: 100vh;
+  @include flex-layout(column, center, center);
+  background-color: $color-bg-purple;
+
+  &__card {
+    background-color: $color-bg-card;
+    padding: 48px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 24px 80px 24px 24px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  }
+
+  &__title {
+    font-family: $font-nerko-one;
+    font-size: 3rem;
+    color: $color-text-dark;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__form {
+    @include flex-layout(column, flex-start, stretch, 24px);
+  }
+
+  &__field {
+    @include flex-layout(column, flex-start, stretch, 8px);
+  }
+
+  &__label {
+    font-weight: 700;
+    color: $color-text-dark;
+  }
+
+  &__input {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba($color-text-dark, 0.15);
+    background-color: $color-bg-white;
+    color: $color-text-dark;
+
+    &:focus {
+      outline: none;
+      border-color: $color-accent;
+      box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+    }
+  }
+
+  &__error-message {
+    border-color: #e74c3c;
+  }
+
+  &__error-container {
+    height: 24px;
+    font-weight: 600;
+    text-align: right;
+
+    span {
+      color: #e74c3c
+    }
+  }
+
+  &__supabase-error-container{
+    @include flex-layout(row, space-between, center, 16px);
+    flex: 1;
+  }
+
+  &__supabase-error {
+    min-height: 48px;
+    font-weight: 700;
+    color: #e74c3c;
+    background: rgba(#e74c3c, 0.1);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 8px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+
+    &--visible {
+      opacity: 1;
+    }
+  }
+
+  &__toggle-btn {
+    display: block;
+    width: fit-content;
+    margin: 24px auto 0;
+    padding: 8px 12px;
+    text-align: center;
+    background: none;
+    border: none;
+    color: $color-text-dark;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    text-decoration: underline;
+    
+    &:hover {
+      opacity: 1;
+      color: $color-accent;
+    }
+  }
+}
