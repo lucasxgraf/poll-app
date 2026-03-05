@@ -12,8 +12,9 @@ export const routes: Routes = [
   { path: 'legal', component: LegalComponent },
   { path: 'privacy', component: PrivacyComponent },
 
-  { 
-    path: 'create', 
-    loadComponent: () => import('./features/home/home-component').then(m => m.HomeComponent) ,
+  {
+    path: 'create-survey',
+    loadComponent: () => import('./features/create-survey/create-survey.component').then(m => m.CreateSurveyComponent),
     canActivate: [authGuard]
-  }];
+  }
+];

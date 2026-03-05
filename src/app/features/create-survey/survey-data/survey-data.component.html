@@ -1,0 +1,39 @@
+<div class="survey-data" [formGroup]="parentForm">
+  <div class="survey-data__main">
+    <app-input-field
+      id="survey-title"
+      label="Survey name"
+      placeholder="e.g. Team Event Planning"
+      [control]="$any(parentForm.controls['title'])">
+      <button action type="button" class="survey-data__icon-btn">
+        <img src="assets/icons/trash.svg" alt="Clear">
+      </button>
+    </app-input-field>
+
+    <div class="survey-data__row">
+      <app-input-field
+        id="survey-date"
+        label="Set end date (optional)"
+        type="date"
+        [control]="$any(parentForm.controls['expires_at'])">
+      </app-input-field>
+
+      <div class="survey-data__field">
+        <label for="survey-category" class="survey-data__label">Choose categorie</label>
+        <div class="survey-data__select-wrapper">
+          <select id="survey-category" formControlName="category" class="survey-data__select">
+            <option value="" disabled>Select a category</option>
+            @for (cat of categories(); track cat.id) {
+              <option [value]="cat.name">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="survey-data__description">
+    <label for="survey-desc" class="survey-data__label">Describing text (optional)</label>
+    <textarea id="survey-desc" formControlName="description" class="survey-data__textarea"></textarea>
+  </div>
+</div>

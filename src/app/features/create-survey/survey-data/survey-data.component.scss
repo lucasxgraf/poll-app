@@ -1,0 +1,84 @@
+@use '../../../../styles/variables' as *;
+
+.survey-data {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  width: 100%;
+
+  &__main {
+    @include flex-layout(column, flex-start, stretch, 24px);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  &__field {
+    @include flex-layout(column, flex-start, stretch, 4px);
+  }
+
+  &__label {
+    font-weight: 700;
+    font-size: 1rem;
+    color: $color-text-dark;
+    padding-left: 4px;
+  }
+
+  &__select-wrapper {
+    position: relative;
+    background-color: rgba($color-bg-white, 0.6);
+    border-radius: 12px;
+    min-height: 56px;
+    @include flex-layout(row, center, center);
+
+    &::after {
+      content: '▼';
+      @include absolute-pos(18px, 16px);
+      color: $color-text-dark;
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+  }
+
+  &__select {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border: none;
+    background: transparent;
+    color: $color-text-dark;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  &__textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 150px;
+    background-color: rgba($color-bg-white, 0.6);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    color: $color-text-dark;
+    resize: none;
+    outline: none;
+
+    &:focus {
+      background-color: $color-light-accent;
+    }
+  }
+
+  &__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 1; }
+  }
+}
