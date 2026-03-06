@@ -1,31 +1,27 @@
 <div class="survey-data" [formGroup]="parentForm">
   <div class="survey-data__main">
-    <app-input-field
-      id="survey-title"
-      label="Survey name"
-      placeholder="e.g. Team Event Planning"
+    <app-input-field id="survey-title" label="Survey name" placeholder="e.g. Team Event Planning"
       [control]="$any(parentForm.controls['title'])">
-      <button action type="button" class="survey-data__icon-btn">
-        <img src="assets/svg/delete.svg" alt="Trash icon"> 
+      <button action type="button" class="survey-data__icon-btn" (click)="clearField('title')">
+        <img src="assets/svg/delete.svg" alt="Trash icon">
       </button>
     </app-input-field>
 
     <div class="survey-data__row">
-      <app-input-field
-        id="survey-date"
-        label="Set end date (optional)"
-        type="date"
-        [control]="$any(parentForm.controls['expires_at'])">
+      <app-input-field id="survey-date" label="Set end date (optional)" placeholder="YYYY-MM-DD"
+        [control]="$any(parentForm.controls['expires_at'])" (input)="onDateInput($event)">
+
+        <button action type="button" class="survey-data__icon-btn" (click)="clearField('expires_at')">
+          <img src="assets/svg/delete.svg" alt="Trash icon">
+        </button>
       </app-input-field>
 
       <div class="survey-data__field">
         <div class="dropdown">
           <app-button variant="tertiary" (click)="toggleDropdown()">
             Choose Category
-            <img src="assets/svg/arrow_drop_down.svg" 
-                 alt="icon dropdown" 
-                 class="dropdown__icon" 
-                 [class.dropdown__icon--open]="isDropdownOpen()">
+            <img src="assets/svg/arrow_drop_down.svg" alt="icon dropdown" class="dropdown__icon"
+              [class.dropdown__icon--open]="isDropdownOpen()">
           </app-button>
 
           <div class="dropdown__selection">
@@ -33,21 +29,27 @@
           </div>
 
           @if (isDropdownOpen()) {
-            <ul class="dropdown__menu">
-              @for (category of categoryOptions(); track category) {
-                <li class="dropdown__item" (click)="selectCategory(category)">
-                  {{ category }}
-                </li>
-              }
-            </ul>
+          <ul class="dropdown__menu">
+            @for (category of categoryOptions(); track category) {
+            <li class="dropdown__item" (click)="selectCategory(category)">
+              {{ category }}
+            </li>
+            }
+          </ul>
           }
         </div>
       </div>
     </div>
   </div>
-  
+
   <div class="survey-data__description">
     <label for="survey-desc" class="survey-data__label">Describing text (optional)</label>
-    <textarea id="survey-desc" formControlName="description" class="survey-data__textarea" placeholder="Optional description..."></textarea>
+    <div class="textarea-layout">
+      <textarea id="survey-desc" formControlName="description" class="survey-data__textarea"
+        placeholder="Optional description..."></textarea>
+      <button type="button" class="survey-data__icon-btn" (click)="clearField('description')">
+        <img src="assets/svg/delete.svg" alt="Trash icon">
+      </button>
+    </div>
   </div>
 </div>

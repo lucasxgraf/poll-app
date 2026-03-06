@@ -27,6 +27,9 @@
         @if (control().errors?.['required']) { Required field }
         @if (control().errors?.['email']) { Invalid email }
         @if (control().errors?.['minlength']) { Too short (min 6) }
+        @if (control().errors?.['invalidDateFormat']) { Please use this format: YYYY-MM-DD }
+        @if (control().errors?.['invalidDate']) { Invalid date }
+        @if (control().errors?.['pastDate']) { Only future dates allowed }
       </span>
     }
   </div>

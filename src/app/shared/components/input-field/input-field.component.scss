@@ -18,7 +18,7 @@
   &__wrapper {
     flex: 1;
     background-color: $color-bg-white;
-    border-radius: 12px; 
+    border-radius: 5px 20px 5px 5px; 
     border: 2px solid transparent;
     min-height: 56px;
     transition: all 0.2s;
@@ -29,7 +29,7 @@
   }
 
   &__control {
-    flex: 1;
+    width: 100%;
     padding: 16px;
     border: none;
     background: transparent;
@@ -42,7 +42,6 @@
   }
 
   &__action {
-    padding-right: 12px;
     @include flex-layout(row, center, center);
   }
 

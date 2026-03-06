@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { PollService } from '../../core/services/poll.service';
-import { SurveyDataComponent } from './survey-data/survey-data.component';
+import { dateValidator, SurveyDataComponent } from './survey-data/survey-data.component';
 import { BadgeComponent } from '../../shared/ui/badge/badge';
 import { ButtonComponent } from '../../shared/ui/button/button';
 
@@ -27,7 +27,7 @@ export class CreateSurveyComponent implements OnInit {
   surveyForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
     description: [''],
-    expires_at: [''],
+    expires_at: ['', [dateValidator()]],
     category: ['', Validators.required],
     questions: this.fb.array([])
   });

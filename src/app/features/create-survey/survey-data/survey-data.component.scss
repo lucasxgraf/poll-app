@@ -2,19 +2,39 @@
 
 .survey-data {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
   padding: 40px 32px;
-  border-radius: 5px 80px 5px 5px;
+
+  ::ng-deep .input-field__label, &__label {
+    color: $color-bg-white;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+  }
 
   &__main {
-    @include flex-layout(column, flex-start, stretch, 32px);
+    @include flex-layout(column, flex-start, stretch, 24px);
   }
 
   &__row {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
     gap: 32px;
+  }
+
+  ::ng-deep input[type="date"] {
+    position: relative;
+    cursor: pointer;
+
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(0.5); 
+
+      &:hover { 
+        filter: invert(0.2); 
+      }
+    }
   }
 
   &__field {
@@ -28,13 +48,17 @@
     padding-left: 4px;
   }
 
-  &__textarea {
-    width: 100%;
+  .textarea-layout {
+    @include flex-layout(row, flex-start, flex-start, 12px);
     height: 100%;
+  }
+
+  &__textarea {
+    flex: 1;
     min-height: 250px;
     background-color: $color-bg-white;
     border: none;
-    border-radius: 12px;
+    border-radius: 5px 20px 5px 5px;
     padding: 16px;
     color: $color-text-dark;
     outline: none;
@@ -52,10 +76,9 @@
     @include flex-layout();
     
     img { 
-      width: 20px; 
+      width: 24px; 
       opacity: 0.6; 
-      transition: 
-      opacity 0.2s; 
+      transition: opacity 0.2s; 
     }
     
       &:hover img { 
