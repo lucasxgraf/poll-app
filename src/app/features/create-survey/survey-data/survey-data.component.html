@@ -6,7 +6,7 @@
       placeholder="e.g. Team Event Planning"
       [control]="$any(parentForm.controls['title'])">
       <button action type="button" class="survey-data__icon-btn">
-        <img src="assets/icons/trash.svg" alt="Clear">
+        <img src="assets/svg/delete.svg" alt="Trash icon"> 
       </button>
     </app-input-field>
 
@@ -19,14 +19,26 @@
       </app-input-field>
 
       <div class="survey-data__field">
-        <label for="survey-category" class="survey-data__label">Choose categorie</label>
-        <div class="survey-data__select-wrapper">
-          <select id="survey-category" formControlName="category" class="survey-data__select">
-            <option value="" disabled>Select a category</option>
-            @for (cat of categories(); track cat.id) {
-              <option [value]="cat.name">{{ cat.name }}</option>
-            }
-          </select>
+        <div class="dropdown">
+          <!-- Button-Trigger -->
+          <app-button variant="tertiary" (click)="toggleDropdown()">
+            {{ selectedCategory() }}
+            <img src="assets/svg/arrow_drop_down.svg" 
+                 alt="icon dropdown" 
+                 class="dropdown__icon" 
+                 [class.dropdown__icon--open]="isDropdownOpen()">
+          </app-button>
+
+          <!-- Absolut positioniertes Menü (verhindert UI-Sprünge) -->
+          @if (isDropdownOpen()) {
+            <ul class="dropdown__menu">
+              @for (category of categoryOptions(); track category) {
+                <li class="dropdown__item" (click)="selectCategory(category)">
+                  {{ category }}
+                </li>
+              }
+            </ul>
+          }
         </div>
       </div>
     </div>
@@ -34,6 +46,6 @@
   
   <div class="survey-data__description">
     <label for="survey-desc" class="survey-data__label">Describing text (optional)</label>
-    <textarea id="survey-desc" formControlName="description" class="survey-data__textarea"></textarea>
+    <textarea id="survey-desc" formControlName="description" class="survey-data__textarea" placeholder="Optional description..."></textarea>
   </div>
 </div>

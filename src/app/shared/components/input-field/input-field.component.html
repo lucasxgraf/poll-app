@@ -5,15 +5,16 @@
     </label>
   }
 
-  <div class="input-field__wrapper">
-    <input 
-      [id]="id()"
-      [name]="id()"
-      [type]="type()" 
-      [formControl]="control()" 
-      [placeholder]="placeholder()"
-      [autocomplete]="autocomplete()"
-      class="input-field__control">
+  <div class="input-field__layout">
+    <div class="input-field__wrapper">
+      <input 
+        [id]="id()"
+        [name]="id()"
+        [type]="type()" 
+        [formControl]="control()" 
+        [placeholder]="placeholder()"
+        class="input-field__control">
+    </div>
     
     <div class="input-field__action">
       <ng-content select="[action]"></ng-content>

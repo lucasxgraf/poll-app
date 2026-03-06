@@ -11,17 +11,20 @@
     padding-left: 4px;
   }
 
+  &__layout {
+    @include flex-layout(row, flex-start, center, 12px);
+  }
+
   &__wrapper {
-    @include flex-layout(row, flex-start, center);
-    background-color: rgba($color-bg-white, 0.6);
-    border-radius: 5px 30px 5px 5px;
+    flex: 1;
+    background-color: $color-bg-white;
+    border-radius: 12px; 
     border: 2px solid transparent;
-    transition: all 0.2s ease-in-out;
     min-height: 56px;
+    transition: all 0.2s;
 
     &:focus-within {
-      background-color: $color-light-accent; 
-      border-color: transparent;
+      background-color: $color-light-accent;
     }
   }
 

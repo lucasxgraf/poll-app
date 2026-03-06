@@ -1,0 +1,43 @@
+@use '../../../styles/variables' as *;
+
+.create-survey {
+  min-height: 100vh;
+  background-color: $color-bg-purple;
+  padding: 80px 0;
+
+  &__card {
+    background-color: $color-bg-light-purple-card;
+    border-radius: 24px 80px 24px 24px;
+    width: 100%;
+    max-width: 1300px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  }
+
+  &__header {
+    @include flex-layout(row, space-between, flex-end);
+    margin-bottom: 48px;
+    width: 100%;
+    max-width: 1300px;
+  }
+  
+  .header-left {
+    @include flex-layout(column, flex-start, flex-start, 8px);
+    
+    app-badge { margin-bottom: 8px; }
+  }
+
+  &__title {
+    font-family: $font-nerko-one;
+    font-size: 4rem;
+    color: $color-accent;
+    line-height: 1;
+  }
+
+  .btn-cancel {
+    border-radius: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    @include flex-layout(row, center, center, 12px);
+    transition: all 0.2s;
+  }
+}

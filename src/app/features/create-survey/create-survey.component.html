@@ -1,4 +1,20 @@
-<form [formGroup]="surveyForm">
-  <app-survey-data [categories]="categories()"></app-survey-data>
-  
-</form>
+<section class="create-survey">
+  <div class="container">
+    <div class="create-survey__header">
+      <div class="header-left">
+        <app-badge variant="primary">Draft</app-badge>
+        <h1 class="create-survey__title">Create new survey</h1>
+      </div>
+      <app-button variant="primary" type="button" class="btn-cancel" (click)="cancel()">
+        Cancel
+        <img src="assets/svg/close.svg" alt="Close icon">
+      </app-button>
+    </div>
+
+    <div class="create-survey__card">
+      <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
+        <app-survey-data [categories]="categories()"></app-survey-data>
+      </form>
+    </div>
+  </div>
+</section>
