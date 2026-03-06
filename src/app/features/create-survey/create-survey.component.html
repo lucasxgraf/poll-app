@@ -1,11 +1,12 @@
 <section class="create-survey">
   <div class="container">
+    
     <div class="create-survey__header">
       <div class="header-left">
         <app-badge variant="primary">Draft</app-badge>
         <h1 class="create-survey__title">Create new survey</h1>
       </div>
-      <app-button variant="primary" type="button" class="btn-cancel" (click)="cancel()">
+      <app-button variant="primary" type="button" (click)="cancel()">
         Cancel
         <img src="assets/svg/close.svg" alt="Close icon">
       </app-button>
@@ -14,7 +15,30 @@
     <div class="create-survey__card">
       <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
         <app-survey-data [categories]="categories()"></app-survey-data>
+
+        <div formArrayName="questions" class="questions-grid">
+          @for (question of questions.controls; track question; let qIdx = $index) {
+            <app-question-item 
+              [index]="qIdx"
+              (removeQuestion)="removeQuestion($event)">
+            </app-question-item>
+          }
+
+          <div class="questions-grid__actions">
+            <app-button variant="secondary" type="button" (click)="addQuestion()">
+              Add next question 
+              <img src="assets/svg/add_circle.svg" alt="">
+            </app-button>
+          </div>
+        </div>
+
+        <div class="create-survey__footer">
+          <app-button variant="primary" type="submit" [disabled]="isLoading()">
+            Publish
+          </app-button>
+        </div>
       </form>
     </div>
+    
   </div>
 </section>

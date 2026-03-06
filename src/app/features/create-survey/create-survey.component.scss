@@ -9,7 +9,7 @@
     background-color: $color-bg-light-purple-card;
     border-radius: 24px 80px 24px 24px;
     width: 100%;
-    max-width: 1300px;
+    max-width: 1440px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   }
 
@@ -40,4 +40,23 @@
     @include flex-layout(row, center, center, 12px);
     transition: all 0.2s;
   }
+}
+
+.questions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px 48px;
+  padding: 40px 32px;
+  align-items: start;
+
+  &__actions {
+    height: 56px;
+    margin-top: 24px;
+    @include flex-layout(row, flex-start, center);
+  }
+}
+
+.create-survey__footer {
+  @include flex-layout(row, flex-end, center);
+  padding: 0 32px 40px
 }

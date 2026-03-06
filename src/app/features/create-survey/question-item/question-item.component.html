@@ -1,1 +1,49 @@
-<p>question-item.component works!</p>
+<section class="question-item" [formGroup]="questionGroup">
+  
+  <div class="question-item__header">
+    <h2 class="question-item__title">{{ index() + 1 }}. Question</h2>
+    <button type="button" class="question-item__icon-btn" (click)="removeQuestion.emit(index())">
+      <img src="assets/svg/delete.svg" alt="Delete Question">
+    </button>
+  </div>
+
+  <app-input-field
+    [id]="'question-text-' + index()"
+    placeholder="Enter your question"
+    [control]="$any(questionGroup.get('question_text'))">
+  </app-input-field>
+
+  <div class="answers">
+    <div class="answers__header">
+      <h3>Answers</h3>
+      
+      <label class="checkbox-wrapper">
+        <input type="checkbox" formControlName="allow_multiple">
+        <span class="checkbox-wrapper__visual"></span>
+        <span class="checkbox-wrapper__text">Allow multiple answers</span>
+      </label>
+    </div>
+
+    <div formArrayName="options">
+      @for (option of optionsArray.controls; track option; let oIdx = $index) {
+        <div class="option-row">
+          <span class="option-row__letter">{{ ['A','B','C','D','E','F'][oIdx] }}.</span>
+          
+          <app-input-field
+            [id]="'q-' + index() + '-o-' + oIdx"
+            [control]="getOptionControl(oIdx)"
+            placeholder="Enter your answer option">
+            <button action type="button" class="question-item__icon-btn" (click)="removeOption(oIdx)">
+              <img src="assets/svg/delete.svg" alt="Delete Answer">
+            </button>
+          </app-input-field>
+        </div>
+      }
+    </div>
+
+    <app-button variant="tertiary" type="button" class="add-answer-btn" (click)="addOption()">
+      Add answer
+      <img src="assets/svg/add_circle.svg" alt="Add circle icon">
+    </app-button>
+  </div>
+</section>
