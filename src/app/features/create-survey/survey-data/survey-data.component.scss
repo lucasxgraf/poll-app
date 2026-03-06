@@ -13,6 +13,13 @@
     display: block;
   }
 
+  ::ng-deep {
+    .input-field__error-area {
+      text-align: left; 
+      padding-left: 4px;
+    }
+  }
+
   &__main {
     @include flex-layout(column, flex-start, stretch, 24px);
   }
