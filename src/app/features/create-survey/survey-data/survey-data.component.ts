@@ -19,7 +19,7 @@ export class SurveyDataComponent {
   private pollService = inject(PollService);
   categories = input.required<Category[]>();
   isDropdownOpen = signal(false);
-  selectedCategory = signal('Select Categories');
+  selectedCategory = signal<string | null>(null);
 
   get parentForm() {
     return (this.parentContainer as FormGroupDirective).form;

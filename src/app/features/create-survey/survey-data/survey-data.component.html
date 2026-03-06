@@ -20,16 +20,18 @@
 
       <div class="survey-data__field">
         <div class="dropdown">
-          <!-- Button-Trigger -->
           <app-button variant="tertiary" (click)="toggleDropdown()">
-            {{ selectedCategory() }}
+            Choose Category
             <img src="assets/svg/arrow_drop_down.svg" 
                  alt="icon dropdown" 
                  class="dropdown__icon" 
                  [class.dropdown__icon--open]="isDropdownOpen()">
           </app-button>
 
-          <!-- Absolut positioniertes Menü (verhindert UI-Sprünge) -->
+          <div class="dropdown__selection">
+            {{ selectedCategory()}}
+          </div>
+
           @if (isDropdownOpen()) {
             <ul class="dropdown__menu">
               @for (category of categoryOptions(); track category) {
