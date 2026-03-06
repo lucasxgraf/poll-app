@@ -59,7 +59,7 @@
     --btn-color: #{$color-bg-white};
     --btn-text-decoration: underline;
     --btn-padding: 8px 12px;
-    
+
     &:hover:not(:disabled) {
       --btn-color: #{$color-accent};
     }

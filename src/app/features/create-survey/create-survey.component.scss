@@ -23,7 +23,9 @@
   .header-left {
     @include flex-layout(column, flex-start, flex-start, 8px);
     
-    app-badge { margin-bottom: 8px; }
+    app-badge { 
+      margin-bottom: 8px; 
+    }
   }
 
   &__title {

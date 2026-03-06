@@ -24,8 +24,17 @@
     border: none;
     cursor: pointer;
     @include flex-layout();
-    img { width: 24px; opacity: 0.6; transition: opacity 0.2s; }
-    &:hover img { opacity: 1; }
+
+    svg { 
+      width: 24px; 
+      opacity: 0.6; 
+      transition: 
+      opacity 0.2s; 
+    }
+
+    &:hover svg { 
+      opacity: 1; 
+    }
   }
 }
 
@@ -100,5 +109,21 @@
 }
 
 .add-answer-btn {
-  width: fit-content;
+  ::ng-deep .ui-btn--tertiary {
+    color: $color-bg-white !important;
+    @include flex-layout(row, flex-start, center, 8px);
+    
+    svg path {
+      fill: $color-bg-white;
+      transition: all 0.2s;
+    }
+
+    &:hover {
+      color: $color-accent !important;
+      text-decoration: underline !important;
+      svg path { 
+        fill: $color-accent !important; 
+      }
+    }
+  }
 }
