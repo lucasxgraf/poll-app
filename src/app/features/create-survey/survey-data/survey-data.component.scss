@@ -79,17 +79,15 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
     @include flex-layout();
-    
-    img { 
-      width: 24px; 
-      opacity: 0.6; 
-      transition: opacity 0.2s; 
+
+    svg path {
+      fill: rgba($color-bg-white, 0.6); 
+      transition: fill 0.2s ease;
     }
-    
-      &:hover img { 
-      opacity: 1; 
+
+    &:hover svg path {
+      fill: $color-accent; 
     }
   }
 }

@@ -25,15 +25,13 @@
     cursor: pointer;
     @include flex-layout();
 
-    svg { 
-      width: 24px; 
-      opacity: 0.6; 
-      transition: 
-      opacity 0.2s; 
+    svg path {
+      fill: rgba($color-bg-white, 0.6); 
+      transition: fill 0.2s ease;
     }
 
-    &:hover svg { 
-      opacity: 1; 
+    &:hover svg path {
+      fill: $color-accent; 
     }
   }
 }
