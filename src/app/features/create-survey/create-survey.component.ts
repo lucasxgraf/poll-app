@@ -8,6 +8,9 @@ import { dateValidator, SurveyDataComponent } from './survey-data/survey-data.co
 import { BadgeComponent } from '../../shared/ui/badge/badge';
 import { ButtonComponent } from '../../shared/ui/button/button';
 import { QuestionItemComponent } from "../create-survey/question-item/question-item.component";
+import { AuthService } from '../../core/services/auth.service';
+import { CreateSurveyInput } from '../../shared/models/poll.interface';
+
 
 @Component({
   selector: 'app-create-survey',
@@ -20,6 +23,8 @@ export class CreateSurveyComponent implements OnInit {
   private fb = inject(FormBuilder);
   private pollService = inject(PollService);
   private router = inject(Router);
+  private authService = inject(AuthService);
+
 
   categories = this.pollService.categories;
   isLoading = signal(false);
@@ -43,17 +48,17 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   addQuestion() {
-  const questionGroup = this.fb.group({
-    question_text: ['', Validators.required],
-    allow_multiple: [false],
-    options: this.fb.array([
-      this.fb.group({ label: ['', Validators.required] }),
-      this.fb.group({ label: ['', Validators.required] })
-    ])
-  });
-  
-  this.questions.push(questionGroup);
-}
+    const questionGroup = this.fb.group({
+      question_text: ['', Validators.required],
+      allow_multiple: [false],
+      options: this.fb.array([
+        this.fb.group({ label: ['', Validators.required] }),
+        this.fb.group({ label: ['', Validators.required] })
+      ])
+    });
+    
+    this.questions.push(questionGroup);
+  }
 
 
   removeQuestion(index: number) {
@@ -69,9 +74,40 @@ export class CreateSurveyComponent implements OnInit {
 
   async onSubmit() {
     if (this.surveyForm.invalid) {
-      this.surveyForm.markAllAsTouched();
-      return;
+      return this.handleInvalidForm();
     }
-    console.log('Formular-Daten:', this.surveyForm.getRawValue());
+
+    const user = this.authService.currentUser();
+    if (!user) {
+      return alert('You must be logged in!');
+    }
+
+    await this.processSurveySubmission(user.id);
+  }
+
+  private handleInvalidForm() {
+    this.surveyForm.markAllAsTouched();
+  }
+
+  private async processSurveySubmission(userId: string) {
+    this.isLoading.set(true);
+    
+    const surveyData = this.surveyForm.getRawValue() as CreateSurveyInput;
+    const result = await this.pollService.createFullSurvey(surveyData, userId);
+
+    if (result.success) {
+      this.navigateToDashboard();
+    } else {
+      this.handleSubmissionError();
+    }
+  }
+
+  private navigateToDashboard() {
+    this.router.navigate(['/']);
+  }
+
+  private handleSubmissionError() {
+    alert('Fehler beim Speichern. Bitte versuche es erneut.');
+    this.isLoading.set(false);
   }
 }

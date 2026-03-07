@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Survey, Category } from '../../shared/models/poll.interface';
+import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput } from '../../shared/models/poll.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,71 @@ export class PollService {
 
   private categoriesSignal = signal<Category[]>([]);
   categories = this.categoriesSignal.asReadonly();
+
+  async createFullSurvey(formData: CreateSurveyInput, userId: string) {
+    try {
+      const surveyId = await this.insertSurveyRecord(formData, userId);
+
+      await this.processQuestions(surveyId, formData.questions);
+
+      return { success: true };
+    } catch (error) {
+      console.error('Survey creation failed:', error);
+      return { success: false, error };
+    }
+  }
+
+  private async insertSurveyRecord(formData: CreateSurveyInput, userId: string): Promise<string> {
+    const { data, error } = await this.supabase
+      .from('surveys')
+      .insert({
+        title: formData.title,
+        description: formData.description || null,
+        category: formData.category,
+        expires_at: formData.expires_at || null,
+        owner_id: userId
+      })
+      .select('id')
+      .single();
+
+    if (error) throw error;
+      return data.id;
+  }
+
+  private async processQuestions(surveyId: string, questions: CreateQuestionInput[]) {
+    for (const questionData of questions) {
+      await this.insertQuestionWithAnswers(surveyId, questionData);
+    }
+  }
+
+  private async insertQuestionWithAnswers(surveyId: string, qData: CreateQuestionInput) {
+    const { data: question, error: qError } = await this.supabase
+      .from('polls_questions')
+      .insert({
+        survey_id: surveyId,
+        question_text: qData.question_text,
+        allow_multiple: qData.allow_multiple
+      })
+      .select('id')
+      .single();
+
+    if (qError) throw qError;
+
+    await this.insertPollOptions(question.id, qData.options);
+  }
+
+  private async insertPollOptions(questionId: string, options: CreateOptionInput[]) {
+    const preparedOptions = options.map(opt => ({
+      poll_id: questionId,
+      label: opt.label
+    }));
+
+    const { error } = await this.supabase
+      .from('polls_options')
+      .insert(preparedOptions);
+
+    if (error) throw error;
+  }
 
   async fetchAllSurveys() {
     const { data, error } = await this.supabase
