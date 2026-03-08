@@ -4,10 +4,11 @@ import { HeaderComponent } from "./core/layout/header/header";
 import { Footer } from "./core/layout/footer/footer";
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { Toast } from "./shared/ui/toast/toast";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, Footer],
+  imports: [RouterOutlet, HeaderComponent, Footer, Toast],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

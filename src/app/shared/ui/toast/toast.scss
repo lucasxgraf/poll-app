@@ -1,0 +1,54 @@
+@use '../../../../styles/variables' as *;
+
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 120%; 
+  transform: translate(-50%, 0) scale(0.8);
+  z-index: 9999;
+  @include flex-layout($direction: row, $justify: flex-start, $align: flex-start, $gap: 24px);
+  background-color: $color-light-accent; 
+  color: $color-text-dark;
+  padding: 24px 32px;
+  border-radius: 24px 60px 24px 24px; 
+  box-shadow: 0 12px 40px rgba($color-bg-purple, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: 
+    top 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.6s ease-out,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &--visible {
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &__message {
+    font-family: $font-nokora;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    max-width: 200px;
+    white-space: pre-line;
+    color: $color-text-dark;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: $color-text-dark;
+    transition: transform 0.3s;
+    @include flex-layout();
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      stroke: $color-text-dark;
+    }
+  }
+}

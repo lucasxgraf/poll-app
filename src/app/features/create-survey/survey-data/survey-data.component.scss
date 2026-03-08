@@ -1,0 +1,162 @@
+@use '../../../../styles/variables' as *;
+
+.survey-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 40px 32px;
+
+  ::ng-deep .input-field__label, &__label {
+    color: $color-bg-white;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  ::ng-deep {
+    .input-field__error-area {
+      text-align: left; 
+      padding-left: 4px;
+    }
+  }
+
+  &__main {
+    @include flex-layout(column, flex-start, stretch, 24px);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+  }
+
+  ::ng-deep input[type="date"] {
+    position: relative;
+    cursor: pointer;
+
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(0.5); 
+
+      &:hover { 
+        filter: invert(0.2); 
+      }
+    }
+  }
+
+  &__field {
+    @include flex-layout(column, flex-start, stretch, 8px);
+    position: relative;
+  }
+
+  &__label {
+    font-weight: 700;
+    color: $color-bg-white;
+    padding-left: 4px;
+  }
+
+  .textarea-layout {
+    @include flex-layout(row, flex-start, flex-start, 12px);
+    height: 100%;
+  }
+
+  &__textarea {
+    flex: 1;
+    min-height: 250px;
+    background-color: $color-bg-white;
+    border: none;
+    border-radius: 5px 20px 5px 5px;
+    padding: 16px;
+    color: $color-text-dark;
+    outline: none;
+    
+    &:focus { 
+      background-color: $color-light-accent; 
+    }
+  }
+
+  &__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    @include flex-layout();
+
+    svg path {
+      fill: rgba($color-bg-white, 0.6); 
+      transition: fill 0.2s ease;
+    }
+
+    &:hover svg path {
+      fill: $color-accent; 
+    }
+  }
+}
+
+.dropdown {
+  position: relative;
+  width: 100%;
+
+  ::ng-deep .ui-btn--tertiary {
+    width: max-content;
+    height: 56px;
+    @include flex-layout(row, center, center, 16px);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  &__icon {
+    width: 20px;
+    transition: transform 0.3s ease;
+    
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+   &__selection {
+    margin-top: 8px;
+    padding-left: 12px;
+    font-weight: 600;
+    transition: color 0.3s;
+    color: $color-accent;
+  }
+
+  &__menu {
+    @include absolute-pos($top: 48px, $left: 0);
+    width: 100%;
+    min-width: 230px;
+    background-color: $color-bg-purple;
+    border: 1px solid rgba($color-bg-white, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    list-style: none;
+    overflow: hidden;
+  }
+
+  &__item {
+    padding: 12px 16px;
+    color: $color-bg-white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: rgba($color-accent, 0.2);
+      color: $color-accent;
+      padding-left: 20px;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba($color-bg-white, 0.05);
+    }
+  }
+}
+
+.error-message {
+  display: block;
+  color: $color-error;
+  font-weight: 600;
+}

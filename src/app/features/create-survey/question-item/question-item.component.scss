@@ -1,0 +1,127 @@
+@use '../../../../styles/variables' as *;
+
+.question-item {
+  width: 100%;
+  @include flex-layout(column, flex-start, stretch, 24px);
+
+  ::ng-deep .input-field__label {
+    color: $color-bg-white !important;
+    font-weight: 700;
+    display: block;
+  }
+
+  &__header {
+    @include flex-layout(row, space-between, center);
+  }
+
+  &__title {
+    font-size: 2rem;
+    color: $color-accent;
+  }
+
+  &__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    @include flex-layout();
+
+    svg path {
+      fill: rgba($color-bg-white, 0.6); 
+      transition: fill 0.2s ease;
+    }
+
+    &:hover svg path {
+      fill: $color-accent; 
+    }
+  }
+}
+
+.answers {
+  @include flex-layout(column, flex-start, stretch, 16px);
+
+  &__header {
+    @include flex-layout(row, space-between, center);
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    color: $color-bg-white;
+    font-weight: 700;
+  }
+}
+
+.checkbox-wrapper {
+  @include flex-layout(row, flex-start, center, 12px);
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  &__visual {
+    height: 24px;
+    width: 24px;
+    background-color: $color-bg-white;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    @include flex-layout(row, center, center);
+
+    &:hover {
+      background-color: $color-light-accent;
+    }
+  }
+
+  input:checked ~ &__visual {
+    background-color: $color-accent;
+    border-color: $color-accent;
+    background-image: url('/assets/svg/check_checkbox.svg'); 
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &__text {
+    color: $color-bg-white;
+    font-weight: 600;
+  }
+}
+
+.option-row {
+  @include flex-layout(row, flex-start, flex-start, 12px);
+  margin-bottom: 8px;
+
+  &__letter {
+    font-weight: 700;
+    margin-top: 16px;
+    min-width: 20px;
+  }
+
+  app-input-field {
+    flex: 1;
+  }
+}
+
+.add-answer-btn {
+  ::ng-deep .ui-btn--tertiary {
+    color: $color-bg-white !important;
+    @include flex-layout(row, flex-start, center, 8px);
+    
+    svg path {
+      fill: $color-bg-white;
+      transition: all 0.2s;
+    }
+
+    &:hover {
+      color: $color-accent !important;
+      text-decoration: underline !important;
+      svg path { 
+        fill: $color-accent !important; 
+      }
+    }
+  }
+}
