@@ -154,3 +154,9 @@
     }
   }
 }
+
+.error-message {
+  display: block;
+  color: $color-error;
+  font-weight: 600;
+}

@@ -10,6 +10,7 @@ import { ButtonComponent } from '../../shared/ui/button/button';
 import { QuestionItemComponent } from "../create-survey/question-item/question-item.component";
 import { AuthService } from '../../core/services/auth.service';
 import { CreateSurveyInput } from '../../shared/models/poll.interface';
+import { ToastService } from '../../core/services/toast.service';
 
 
 @Component({
@@ -24,14 +25,14 @@ export class CreateSurveyComponent implements OnInit {
   private pollService = inject(PollService);
   private router = inject(Router);
   private authService = inject(AuthService);
-
+  private toastService = inject(ToastService);
 
   categories = this.pollService.categories;
   isLoading = signal(false);
 
 
   surveyForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
+    title: ['', [Validators.required, Validators.minLength(6)]],
     description: [''],
     expires_at: ['', [dateValidator()]],
     category: ['', Validators.required],
@@ -60,13 +61,11 @@ export class CreateSurveyComponent implements OnInit {
     this.questions.push(questionGroup);
   }
 
-
   removeQuestion(index: number) {
     if (this.questions.length > 1) {
       this.questions.removeAt(index);
     }
   }
-
 
   cancel() {
     this.router.navigate(['/']);
@@ -96,14 +95,11 @@ export class CreateSurveyComponent implements OnInit {
     const result = await this.pollService.createFullSurvey(surveyData, userId);
 
     if (result.success) {
-      this.navigateToDashboard();
+      await this.toastService.show('Your survey is now published');
+      this.router.navigate(['/']);
     } else {
       this.handleSubmissionError();
     }
-  }
-
-  private navigateToDashboard() {
-    this.router.navigate(['/']);
   }
 
   private handleSubmissionError() {

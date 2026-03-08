@@ -64,6 +64,15 @@ export class SurveyDataComponent {
 
     this.parentForm.get('expires_at')?.setValue(formatted.substring(0, 10), { emitEvent: false });
   }
+
+  get categoryControl() {
+    return this.parentForm.get('category');
+  }
+
+  showCategoryError(): boolean {
+    const control = this.categoryControl;
+    return !!(control && control.invalid && (control.touched || control.dirty));
+  }
 }
 
 export function dateValidator(): ValidatorFn {

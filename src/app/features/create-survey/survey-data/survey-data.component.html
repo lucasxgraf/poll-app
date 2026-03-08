@@ -44,6 +44,10 @@
           </ul>
           }
         </div>
+        
+        @if (showCategoryError()) {
+          <span class="error-message">Please select a category</span>
+        }
       </div>
     </div>
   </div>
