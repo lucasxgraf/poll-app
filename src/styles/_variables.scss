@@ -29,3 +29,12 @@ $font-nerko-one: Nerko One, sans-serif;
   bottom: $bottom;
   left: $left;
 }
+
+// ── Breakpoints ──
+$bp-tablet: 768px;
+$bp-mobile: 576px;
+$bp-small: 400px;
+
+@mixin respond-below($bp) {
+  @media (max-width: $bp) { @content; }
+}

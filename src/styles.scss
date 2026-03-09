@@ -111,4 +111,12 @@ html {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
+
+  @include respond-below($bp-tablet) {
+    padding: 0 16px;
+  }
+
+  @include respond-below($bp-mobile) {
+    padding: 0 12px;
+  }
 }

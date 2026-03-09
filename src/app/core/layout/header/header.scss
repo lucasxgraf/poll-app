@@ -6,6 +6,10 @@
   background-color: $color-bg-purple;
   @include flex-layout(row, center, center);
 
+  @include respond-below($bp-mobile) {
+    height: 70px;
+  }
+
   &__wrapper {
     @include flex-layout(row, space-between, center);
     width: 100%;
@@ -24,6 +28,10 @@
   &__logo-img {
     height: 60px;
     width: auto;
+
+    @include respond-below($bp-mobile) {
+      height: 40px;
+    }
   }
 
   &__action {
