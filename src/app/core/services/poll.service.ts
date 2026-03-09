@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput } from '../../shared/models/poll.interface';
+import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput, FullSurvey, VoteInput, Vote } from '../../shared/models/poll.interface';
+import { RealtimeChannel, RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class PollService {
 
       await this.processQuestions(surveyId, formData.questions);
 
-      return { success: true };
+      return { success: true, id: surveyId };
     } catch (error) {
       console.error('Survey creation failed:', error);
       return { success: false, error };
@@ -28,13 +29,17 @@ export class PollService {
   }
 
   private async insertSurveyRecord(formData: CreateSurveyInput, userId: string): Promise<string> {
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 14);
+    const fallbackDateString = defaultDate.toISOString().split('T')[0];
+
     const { data, error } = await this.supabase
       .from('surveys')
       .insert({
         title: formData.title,
         description: formData.description || null,
         category: formData.category,
-        expires_at: formData.expires_at || null,
+        expires_at: formData.expires_at || fallbackDateString,
         owner_id: userId
       })
       .select('id')
@@ -79,6 +84,37 @@ export class PollService {
     if (error) throw error;
   }
 
+  async submitVotes(votes: VoteInput[], userId: string, questionIds: string[]) {
+  try {
+    const alreadyVoted = await this.hasUserVoted(questionIds, userId);
+    if (alreadyVoted) {
+      throw new Error('You have already participated in this survey.');
+    }
+
+    const { error } = await this.supabase
+      .from('votes')
+      .insert(votes);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error submitting votes:', error);
+    return { success: false, error: error.message || 'Unknown error' };
+  }
+}
+
+  async hasUserVoted(questionIds: string[], userId: string): Promise<boolean> {
+    const { data, error } = await this.supabase
+      .from('votes')
+      .select('id')
+      .in('poll_id', questionIds)
+      .eq('voter_id', userId)
+      .limit(1);
+
+    if (error) return false;
+    return !!(data && data.length > 0);
+  }
+
   async fetchAllSurveys() {
     const { data, error } = await this.supabase
       .from('surveys')
@@ -89,6 +125,26 @@ export class PollService {
       return;
     }
     this.surveysSignal.set(data as Survey[]);
+  }
+
+  async fetchSurveyById(id: string): Promise<FullSurvey | null> {
+    const { data, error } = await this.supabase
+      .from('surveys')
+      .select(`*,
+        questions:polls_questions (
+          *,
+          options:polls_options (*)
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Fehler beim Laden des Surveys:', error);
+      return null;
+    }
+
+    return data as unknown as FullSurvey;
   }
 
   async fetchCategories() {
@@ -103,5 +159,33 @@ export class PollService {
     }
 
     this.categoriesSignal.set(data as Category[]);
+  }
+
+  async fetchVotesForQuestions(questionIds: string[]): Promise<Vote[]> {
+    const { data, error } = await this.supabase
+      .from('votes')
+      .select('*')
+      .in('poll_id', questionIds);
+
+    if (error) {
+      console.error('Error fetching votes:', error);
+      return [];
+    }
+    return data as Vote[];
+  }
+
+  subscribeToVotes(callback: (payload: RealtimePostgresInsertPayload<Vote>) => void): RealtimeChannel {
+    return this.supabase
+      .channel('votes-realtime')
+      .on<Vote>(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'votes'
+        },
+        (payload) => callback(payload)
+      )
+      .subscribe();
   }
 }

@@ -11,6 +11,11 @@ export const routes: Routes = [
   { path: 'login', component: AuthComponent },
   { path: 'legal', component: LegalComponent },
   { path: 'privacy', component: PrivacyComponent },
+  { 
+    path: 'survey/:id', 
+    loadComponent: () => import('./features/survey-view/survey-view.component').then(m => m.SurveyViewComponent),
+    canActivate: [authGuard]
+  },
 
   {
     path: 'create-survey',

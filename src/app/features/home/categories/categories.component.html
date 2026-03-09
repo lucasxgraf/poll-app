@@ -39,7 +39,8 @@
     <div class="categories__grid">
       @for (item of filteredSurveys(); track item.id) {
         <app-survey-card 
-          [survey]="item" 
+          [survey]="item"
+          [routerLink]="['/survey', item.id]"
           variant="list">
         </app-survey-card>
       } @empty {

@@ -1,3 +1,9 @@
+export interface FullSurvey extends Survey {
+  questions: (PollQuestion & { 
+    options: PollOption[] 
+  })[];
+}
+
 export interface Survey {
   id: string;
   owner_id: string;
@@ -44,4 +50,17 @@ export interface CreateSurveyInput {
   category: string;
   expires_at: string | null;
   questions: CreateQuestionInput[];
+}
+
+export interface Vote {
+  id: string;
+  poll_id: string;
+  option_id: string; 
+  voter_id: string;
+  created_at: string; 
+}
+
+export interface VoteInput {
+  poll_id: string;
+  option_id: string;
 }

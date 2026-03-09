@@ -1,0 +1,120 @@
+<section class="survey-view">
+  <div class="container">
+    
+    @if (isLoading()) {
+      <div class="survey-grid">
+        <div class="survey-card survey-card--loading">
+          <div class="skeleton-loader">
+            <div class="skeleton-loader__title"></div>
+            <div class="skeleton-loader__text"></div>
+            <div class="skeleton-loader__text"></div>
+          </div>
+          <p class="loading-text">Loading survey details...</p>
+        </div>
+        <aside class="results-aside">
+        </aside>
+      </div>
+    } @else if (survey(); as survey) {
+      <div class="survey-grid">
+        <div class="survey-card">
+          <div class="survey-card__header">
+            <app-badge variant="primary">Published</app-badge>
+            <div class="header-meta">
+              <span class="meta-text">Ends on {{ survey.expires_at | date:'dd.MM.yyyy' }}</span>
+              <span class="meta-text">Categorie: {{ survey.category }}</span>
+            </div>
+            
+            <h1 class="survey-card__title">{{ survey.title }}</h1>
+            <p class="survey-card__description">{{ survey.description }}</p>
+          </div>
+
+          <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
+            <div class="questions-grid">
+              @for (question of survey.questions; track question.id; let qIdx = $index) {
+                <div class="question-item">
+                  <h3 class="question-item__title">
+                    {{ qIdx + 1 }}. {{ question.question_text }}
+                  </h3>
+                  <p class="question-item__hint">
+                    {{ question.allow_multiple ? 'More than one answers are possible.' : 'Select one answer.' }}
+                  </p>
+
+                  <div class="options-list">
+                    @for (option of question.options; track option.id; let oIdx = $index) {
+                      <div class="option-row" 
+                           [class.option-row--selected]="isSelected(question.id, option.id)"
+                           (click)="toggleOption(question.id, option.id, question.allow_multiple)">
+                        
+                        <div class="checkbox-visual" [class.checkbox-visual--checked]="isSelected(question.id, option.id)">
+                          @if (isSelected(question.id, option.id)) {
+                            <img src="assets/svg/check_checkbox.svg" alt="checked" class="checkbox-visual__icon">
+                          }
+                        </div>
+
+                        <div class="option-row__content">
+                          <span class="option-letter">{{ ['A','B','C','D','E','F'][oIdx] }}.</span>
+                          <span class="option-label">{{ option.label }}</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="survey-card__footer">
+              @if (!hasVoted()) {
+                <app-button 
+                  type="submit" 
+                  variant="primary" 
+                  [disabled]="isLoading()">
+                  Complete survey
+                </app-button>
+              } @else {
+                  <span class="voted-status__text">You have already participated in this survey.</span>
+              }
+            </div>
+          </form>
+        </div>
+
+        <aside class="results-aside">
+          <h2 class="results-title">
+            Survey results <span class="results-title__live">LIVE</span>
+          </h2>
+
+          @if (!hasVoted()) {
+            <div class="results-placeholder">
+              <p class="results-placeholder__text">
+                Results will be shown here after participants complete the survey.
+              </p>
+              <div class="empty-state">
+                <p>There are no answers yet.</p>
+              </div>
+            </div>
+          } @else {
+            <div class="results-list">
+              @for (question of survey.questions; track question.id; let qIdx = $index) {
+                <div class="result-item">
+                  <h3 class="result-item__question">{{ qIdx + 1 }}. {{ question.question_text }}</h3>
+                  
+                  <div class="bars-container">
+                    @for (option of question.options; track option.id; let oIdx = $index) {
+                      @let percentage = getOptionPercentage(question.id, option.id);
+                      <div class="bar-row">
+                        <span class="bar-row__letter">{{ ['A','B','C','D','E','F'][oIdx] }}</span>
+                        <div class="bar-wrapper">
+                          <div class="bar-visual" [style.width.%]="percentage"></div> 
+                        </div>
+                        <span class="bar-row__percentage">{{ percentage }}%</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+</section>

@@ -9,7 +9,8 @@
     <div class="survey__grid">
       @for (item of surveys().slice(0,3); track item.id) {
         <app-survey-card 
-          [survey]="item" 
+          [survey]="item"
+          [routerLink]="['/survey', item.id]"
           >
         </app-survey-card>
       } @empty {
