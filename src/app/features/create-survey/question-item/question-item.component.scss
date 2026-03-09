@@ -17,6 +17,10 @@
   &__title {
     font-size: 2rem;
     color: $color-accent;
+
+    @include respond-below($bp-mobile) {
+      font-size: 1.5rem;
+    }
   }
 
   &__icon-btn {
@@ -42,6 +46,10 @@
   &__header {
     @include flex-layout(row, space-between, center);
     margin-bottom: 16px;
+
+    @include respond-below($bp-small) {
+      @include flex-layout(column, flex-start, flex-start, 12px);
+    }
   }
 
   &__title {

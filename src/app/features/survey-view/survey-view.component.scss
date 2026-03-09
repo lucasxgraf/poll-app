@@ -4,6 +4,15 @@
   padding: 60px 0;
   background-color: $color-bg-purple;
   min-height: calc(100vh - 100px);
+
+  @include respond-below($bp-tablet) {
+    padding: 32px 0;
+    min-height: calc(100vh - 70px);
+  }
+
+  @include respond-below($bp-mobile) {
+    padding: 24px 0;
+  }
 }
 
 .survey-grid {
@@ -11,10 +20,15 @@
   grid-template-columns: 1fr 380px;
   gap: 80px;
   align-items: start;
+
+  @include respond-below(980px) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 }
 
 .survey-card--loading {
-  min-height: 608tpx;
+  min-height: 608px;
   @include flex-layout(column, center, center, 20px);
 }
 
@@ -49,8 +63,22 @@
   border-radius: 40px 140px 40px 40px; 
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 
+  @include respond-below($bp-tablet) {
+    padding: 32px 24px;
+    border-radius: 24px 80px 24px 24px;
+  }
+
+  @include respond-below($bp-mobile) {
+    padding: 24px 16px;
+    border-radius: 16px 48px 16px 16px;
+  }
+
   &__header {
     margin-bottom: 60px;
+
+    @include respond-below($bp-mobile) {
+      margin-bottom: 32px;
+    }
   }
 
   .header-meta {
@@ -60,6 +88,12 @@
     .meta-text {
     color: $color-text-dark;
     }
+
+    @include respond-below($bp-mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
   }
 
   &__title {
@@ -68,6 +102,15 @@
     font-weight: 800;
     color: $color-accent; 
     margin-bottom: 24px;
+
+    @include respond-below($bp-tablet) {
+      font-size: 2.5rem;
+    }
+
+    @include respond-below($bp-mobile) {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
   }
 
   &__description {
@@ -79,6 +122,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
+
+  @include respond-below($bp-mobile) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 .question-item {
@@ -92,6 +140,10 @@
   &__hint {
     color: $color-text-dark;
     margin-bottom: 24px;
+
+    @include respond-below($bp-mobile) {
+      margin-bottom: 16px;
+    }
   }
 }
 
@@ -152,10 +204,19 @@
     color: $color-bg-white;
     font-family: $font-nerko-one;
     margin-bottom: 32px;
+
+    @include respond-below($bp-mobile) {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
     
     &__live { 
       font-size: 2rem;
-      color: $color-accent; 
+      color: $color-accent;
+
+      @include respond-below($bp-mobile) {
+        font-size: 1.5rem;
+      }
     }
   }
 
@@ -165,12 +226,20 @@
     .empty-state {
       margin-top: 150px;
       text-align: center;
+
+      @include respond-below($bp-tablet) {
+        margin-top: 40px;
+      }
     }
   }
 
   .results-list {
     @include flex-layout(column, flex-start, stretch, 40px);
     animation: fadeIn 0.5s ease-out;
+
+    @include respond-below($bp-mobile) {
+      gap: 24px;
+    }
   }
 
   .result-item {
@@ -219,6 +288,10 @@
 .survey-card__footer {
   margin-top: 60px;
   @include flex-layout(row, flex-end, center);
+
+  @include respond-below($bp-mobile) {
+    margin-top: 32px;
+  }
 }
 
 .voted-status__text {

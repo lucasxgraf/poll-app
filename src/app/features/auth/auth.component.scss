@@ -4,6 +4,7 @@
   height: 100vh;
   @include flex-layout(column, center, center);
   background-color: $color-bg-purple;
+  padding: 24px;
 
   &__card {
     background-color: $color-bg-light-purple;
@@ -12,6 +13,15 @@
     max-width: 600px;
     border-radius: 24px 80px 24px 24px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+    @include respond-below($bp-mobile) {
+      padding: 32px 24px;
+      border-radius: 16px 48px 16px 16px;
+    }
+
+    @include respond-below($bp-small) {
+      padding: 24px 16px;
+    }
   }
 
   &__title {
@@ -20,14 +30,28 @@
     color: $color-text-dark;
     text-align: center;
     margin-bottom: 32px;
+
+    @include respond-below($bp-mobile) {
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
   }
 
   &__form {
     @include flex-layout(column, flex-start, stretch, 24px);
+
+    @include respond-below($bp-mobile) {
+      gap: 16px;
+    }
   }
 
   &__supabase-container{
     @include flex-layout(row, space-between, center, 16px);
+
+    @include respond-below($bp-mobile) {
+      flex-direction: column;
+      gap: 12px;
+    }
   }
 
   &__supabase-error {
