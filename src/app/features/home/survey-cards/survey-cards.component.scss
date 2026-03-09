@@ -6,6 +6,15 @@ h2 {
   font-size: 4rem;
   color: $color-accent;
   margin-bottom: 40px;
+
+  @include respond-below($bp-tablet) {
+    font-size: 2.5rem;
+    margin-bottom: 24px;
+  }
+
+  @include respond-below($bp-small) {
+    font-size: 2rem;
+  }
 }
 
 .survey {
@@ -14,6 +23,11 @@ h2 {
     font-weight: 500;
     font-family: $font-mulish;
     margin-bottom: 32px;
+
+    @include respond-below($bp-tablet) {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
   }
 
   &__grid {
@@ -21,5 +35,14 @@ h2 {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     justify-content: center;
     gap: 32px;
+
+    @include respond-below($bp-mobile) {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    @include respond-below($bp-small) {
+      grid-template-columns: 1fr;
+    }
   }
 }

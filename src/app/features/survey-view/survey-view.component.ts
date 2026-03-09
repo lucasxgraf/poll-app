@@ -8,14 +8,13 @@ import { ButtonComponent } from '../../shared/ui/button/button';
 import { BadgeComponent } from '../../shared/ui/badge/badge';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { AuthService } from '../../core/services/auth.service';
-import { HeaderComponent } from '../../core/layout/header/header';
 import { HeaderService } from '../../core/services/header.service';
 
 
 @Component({
   selector: 'app-survey-view',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, BadgeComponent, HeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, BadgeComponent],
   templateUrl: './survey-view.component.html',
   styleUrl: './survey-view.component.scss'
 })
@@ -103,7 +102,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   }
 
   private setupRealtimeVotes(survey: FullSurvey) {
-    this.voteChannel = this.pollService.subscribeToVotes((payload) => {
+    this.voteChannel = this.pollService.subscribeToVotes(survey.id, (payload) => {
       const newVote = payload.new;
       
       const questionIds = survey.questions.map(q => q.id);

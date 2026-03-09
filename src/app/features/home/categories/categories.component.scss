@@ -4,26 +4,50 @@
   padding: 40px 0;
   background-color: $color-bg-purple;
 
+  @include respond-below($bp-mobile) {
+    padding: 24px 0;
+  }
+
   &__controls {
     @include flex-layout(row, space-between, center, 20px);
     margin-bottom: 40px;
     width: 100%;
+
+    @include respond-below($bp-mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
   }
 
   &__filter {
     @include flex-layout(row, flex-start, center, 16px);
+
+    @include respond-below($bp-small) {
+      gap: 8px;
+    }
 
     ::ng-deep app-button {
       .ui-btn {
         padding: 8px 18px !important;
         border-radius: 40px !important;
         height: 40px;
+
+        @include respond-below($bp-small) {
+          padding: 8px 12px !important;
+        }
       }
     }
   }
 
   &__sort {
     @include flex-layout(row, flex-end, center, 12px);
+
+    @include respond-below($bp-mobile) {
+      justify-content: flex-start;
+      width: 100%;
+    }
   }
   
   &__dropdown {
@@ -62,6 +86,12 @@
       z-index: 100;
       list-style: none;
       overflow: hidden;
+
+      @include respond-below($bp-mobile) {
+        right: auto;
+        left: 0;
+        min-width: 200px;
+      }
     }
 
     &-item {
@@ -88,6 +118,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 32px;
     width: 100%;
+
+    @include respond-below($bp-tablet) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
   }
 
   &__empty-state {
@@ -98,9 +133,21 @@
     text-align: center;
     font-family: $font-mulish;
 
+    @include respond-below($bp-mobile) {
+      padding: 40px 0;
+    }
+
     p {
       font-size: 2rem;
       margin-bottom: 16px;
+
+      @include respond-below($bp-tablet) {
+        font-size: 1.5rem;
+      }
+
+      @include respond-below($bp-mobile) {
+        font-size: 1.25rem;
+      }
     }
   }
 }
