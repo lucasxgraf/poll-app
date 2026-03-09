@@ -23,20 +23,25 @@ export class Categories {
   }
 
   filteredSurveys = computed(() => {
-    const allSurveys = this.pollService.surveys();
-    const statusFilter = this.currentFilter();
-    const categoryFilter = this.selectedCategory();
-    const now = new Date();
+  const allSurveys = this.pollService.surveys();
+  const statusFilter = this.currentFilter();
+  const categoryFilter = this.selectedCategory();
+  
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
 
-    return allSurveys.filter((survey) => {
-      const isExpired = survey.expires_at ? new Date(survey.expires_at) < now : false;
-      const matchesStatus = statusFilter === 'active' ? !isExpired : isExpired;
+  return allSurveys.filter((survey) => {
+    if (!survey.expires_at) 
+      return statusFilter === 'active';
 
-      const matchesCategory = categoryFilter === 'All Categories' || survey.category === categoryFilter;
-
-      return matchesStatus && matchesCategory;
-    });
+    const expiryDate = new Date(survey.expires_at);
+    expiryDate.setHours(0, 0, 0, 0);
+    const isExpired = expiryDate < now;
+    const matchesStatus = statusFilter === 'active' ? !isExpired : isExpired;
+    const matchesCategory = categoryFilter === 'All Categories' || survey.category === categoryFilter;
+    return matchesStatus && matchesCategory;
   });
+});
 
   setFilter(filter: 'active' | 'past') {
     this.currentFilter.set(filter);

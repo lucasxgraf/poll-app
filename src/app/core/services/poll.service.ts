@@ -28,13 +28,18 @@ export class PollService {
   }
 
   private async insertSurveyRecord(formData: CreateSurveyInput, userId: string): Promise<string> {
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 14);
+    const fallbackDateString = defaultDate.toISOString().split('T')[0];
+
+
     const { data, error } = await this.supabase
       .from('surveys')
       .insert({
         title: formData.title,
         description: formData.description || null,
         category: formData.category,
-        expires_at: formData.expires_at || null,
+        expires_at: formData.expires_at || fallbackDateString,
         owner_id: userId
       })
       .select('id')
