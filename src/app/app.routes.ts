@@ -13,9 +13,9 @@ export const routes: Routes = [
   { path: 'privacy', component: PrivacyComponent },
   { 
     path: 'survey/:id', 
-    loadComponent: () => import('./features/survey-view/survey-view.component').then(m => m.SurveyViewComponent) 
+    loadComponent: () => import('./features/survey-view/survey-view.component').then(m => m.SurveyViewComponent),
+    canActivate: [authGuard]
   },
-
 
   {
     path: 'create-survey',

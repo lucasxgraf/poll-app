@@ -2,7 +2,6 @@
 
 .survey-view {
   padding: 60px 0;
-  min-height: 100vh;
   background-color: $color-bg-purple;
 }
 
@@ -188,7 +187,15 @@
 
 .survey-card__footer {
   margin-top: 60px;
-  @include flex-layout(row, flex-end);
+  @include flex-layout(row, flex-end, center);
+}
+
+.voted-status__text {
+  font-family: $font-mulish;
+  font-weight: 700;
+  font-size: 1rem;
+  color: $color-text-dark;
+  opacity: 0.8;
 }
 
 @keyframes fadeIn {

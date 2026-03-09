@@ -96,7 +96,7 @@ export class CreateSurveyComponent implements OnInit {
 
     if (result.success) {
       await this.toastService.show('Your survey is now published');
-      this.router.navigate(['/']);
+      this.router.navigate(['/survey', result.id]);
     } else {
       this.handleSubmissionError();
     }

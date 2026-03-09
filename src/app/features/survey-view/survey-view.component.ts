@@ -27,6 +27,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   
   id = input.required<string>();
   survey = signal<FullSurvey | null>(null);
+  isSubmitting = signal<boolean>(false);
   isLoading = signal<boolean>(true);
   hasVoted = signal<boolean>(false);
   allVotes = signal<Vote[]>([]);
@@ -44,12 +45,29 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
         
         if (alreadyVoted) {
           this.hasVoted.set(true);
+          this.loadFromLocalStorage();
           this.surveyForm.disable();
         }
       }
 
       await this.loadInitialVotes(data);
       this.setupRealtimeVotes(data);
+    }
+  }
+
+  private saveToLocalStorage() {
+    const storageKey = `survey_selection_${this.id()}`;
+    const selection = this.surveyForm.getRawValue();
+    localStorage.setItem(storageKey, JSON.stringify(selection));
+  }
+
+  private loadFromLocalStorage() {
+    const storageKey = `survey_selection_${this.id()}`;
+    const saved = localStorage.getItem(storageKey);
+    
+    if (saved) {
+      const selection = JSON.parse(saved);
+      this.surveyForm.patchValue(selection);
     }
   }
 
@@ -130,18 +148,23 @@ private handleInvalidForm() {
 }
 
 private async processVoteSubmission() {
-  this.isLoading.set(true);
+  const user = this.authService.currentUser();
+  if (!user) return;
+
+  this.isSubmitting.set(true);
 
   const votes = this.mapFormToVotes();
-  const result = await this.pollService.submitVotes(votes);
+  const questionIds = this.survey()?.questions.map(q => q.id) || [];
+  
+  const result = await this.pollService.submitVotes(votes, user.id, questionIds);
 
   if (result.success) {
     await this.handleVoteSuccess();
   } else {
-    this.handleVoteError();
+    alert(result.error); 
   }
 
-  this.isLoading.set(false);
+  this.isSubmitting.set(false);
 }
 
 private mapFormToVotes(): VoteInput[] {
@@ -162,6 +185,7 @@ private mapFormToVotes(): VoteInput[] {
 
   private async handleVoteSuccess() {
     await this.toastService.show('Thanks for voting!');
+    this.saveToLocalStorage();
     this.hasVoted.set(true);
     this.surveyForm.disable();
   }

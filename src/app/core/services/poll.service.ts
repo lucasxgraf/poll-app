@@ -21,7 +21,7 @@ export class PollService {
 
       await this.processQuestions(surveyId, formData.questions);
 
-      return { success: true };
+      return { success: true, id: surveyId };
     } catch (error) {
       console.error('Survey creation failed:', error);
       return { success: false, error };
@@ -84,20 +84,24 @@ export class PollService {
     if (error) throw error;
   }
 
-  async submitVotes(votes: VoteInput[]) {
-    try {
-      const { error } = await this.supabase
-        .from('votes')
-        .insert(votes);
-
-      if (error) throw error;
-
-      return { success: true };
-    } catch (error) {
-      console.error('Error submitting votes:', error);
-      return { success: false, error };
+  async submitVotes(votes: VoteInput[], userId: string, questionIds: string[]) {
+  try {
+    const alreadyVoted = await this.hasUserVoted(questionIds, userId);
+    if (alreadyVoted) {
+      throw new Error('You have already participated in this survey.');
     }
+
+    const { error } = await this.supabase
+      .from('votes')
+      .insert(votes);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error submitting votes:', error);
+    return { success: false, error: error.message || 'Unknown error' };
   }
+}
 
   async hasUserVoted(questionIds: string[], userId: string): Promise<boolean> {
     const { data, error } = await this.supabase
