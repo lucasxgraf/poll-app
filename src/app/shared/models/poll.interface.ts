@@ -1,3 +1,9 @@
+export interface FullSurvey extends Survey {
+  questions: (PollQuestion & { 
+    options: PollOption[] 
+  })[];
+}
+
 export interface Survey {
   id: string;
   owner_id: string;

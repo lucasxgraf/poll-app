@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput } from '../../shared/models/poll.interface';
+import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput, FullSurvey } from '../../shared/models/poll.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -89,6 +89,26 @@ export class PollService {
       return;
     }
     this.surveysSignal.set(data as Survey[]);
+  }
+
+  async fetchSurveyById(id: string): Promise<FullSurvey | null> {
+    const { data, error } = await this.supabase
+      .from('surveys')
+      .select(`*,
+        questions:polls_questions (
+          *,
+          options:polls_options (*)
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Fehler beim Laden des Surveys:', error);
+      return null;
+    }
+
+    return data as unknown as FullSurvey;
   }
 
   async fetchCategories() {

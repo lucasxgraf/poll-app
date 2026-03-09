@@ -1,0 +1,85 @@
+<section class="survey-view">
+  <div class="container">
+    
+    @if (isLoading()) {
+      <div class="loading-state">Loading survey...</div>
+    } @else if (survey(); as survey) {
+      
+      <div class="survey-grid">
+        <!-- LINKER BEREICH: DIE UMFRAGE -->
+        <div class="survey-card">
+          <header class="survey-card__header">
+            <app-badge variant="primary">Published</app-badge>
+            <div class="header-meta">
+              <!-- @if (s.expires_at) {
+                <span class="meta-text">Ends on {{ s.expires_at | date:'dd.MM.yyyy' }}</span>
+              } --> 
+              <div class="meta-text">Platzhalter</div>
+              <span class="meta-text">Categorie: {{ survey.category }}</span>
+            </div>
+            
+            <h1 class="survey-card__title">{{ survey.title }}</h1>
+            <p class="survey-card__description">{{ survey.description }}</p>
+          </header>
+
+          <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
+            <div class="questions-grid">
+              @for (question of survey.questions; track question.id; let qIdx = $index) {
+                <div class="question-item">
+                  <h3 class="question-item__title">
+                    {{ qIdx + 1 }}. {{ question.question_text }}
+                  </h3>
+                  <p class="question-item__hint">
+                    {{ question.allow_multiple ? 'More than one answers are possible.' : 'Select one answer.' }}
+                  </p>
+
+                  <div class="options-list">
+                    @for (option of question.options; track option.id; let oIdx = $index) {
+                      <div class="option-row" 
+                           [class.option-row--selected]="isSelected(question.id, option.id)"
+                           (click)="toggleOption(question.id, option.id, question.allow_multiple)">
+                        
+                        <div class="custom-checkbox">
+                          @if (isSelected(question.id, option.id)) {
+                            <div class="custom-checkbox__inner"></div>
+                          }
+                        </div>
+
+                        <div class="option-row__content">
+                          <span class="option-letter">{{ ['A','B','C','D','E','F'][oIdx] }}.</span>
+                          <span class="option-label">{{ option.label }}</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="survey-card__footer">
+              <app-button type="submit" variant="primary">Complete survey</app-button>
+            </div>
+          </form>
+        </div>
+
+        <!-- RECHTER BEREICH: DIE ERGEBNISSE -->
+        <aside class="results-aside">
+          <h2 class="results-title">
+            Survey results <span class="results-title__live">LIVE</span>
+          </h2>
+          
+          <div class="results-placeholder">
+            <p class="results-placeholder__text">
+              Results will be shown here after participants complete the survey.
+            </p>
+            
+            <div class="empty-state">
+              <p>There are no answers yet.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    }
+  </div>
+</section>

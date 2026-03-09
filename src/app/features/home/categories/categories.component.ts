@@ -3,10 +3,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { SurveyCardComponent } from '../../../shared/components/survey-card/survey-card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { PollService } from '../../../core/services/poll.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-categories',
-  imports: [CommonModule, SurveyCardComponent, ButtonComponent],
+  imports: [CommonModule, SurveyCardComponent, ButtonComponent, RouterLink],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss',
 })
