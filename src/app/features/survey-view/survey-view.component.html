@@ -6,7 +6,6 @@
     } @else if (survey(); as survey) {
       
       <div class="survey-grid">
-        <!-- LINKER BEREICH: DIE UMFRAGE -->
         <div class="survey-card">
           <header class="survey-card__header">
             <app-badge variant="primary">Published</app-badge>
@@ -39,9 +38,9 @@
                            [class.option-row--selected]="isSelected(question.id, option.id)"
                            (click)="toggleOption(question.id, option.id, question.allow_multiple)">
                         
-                        <div class="custom-checkbox">
+                        <div class="checkbox-visual" [class.checkbox-visual--checked]="isSelected(question.id, option.id)">
                           @if (isSelected(question.id, option.id)) {
-                            <div class="custom-checkbox__inner"></div>
+                            <img src="assets/svg/check_checkbox.svg" alt="checked" class="checkbox-visual__icon">
                           }
                         </div>
 
@@ -62,7 +61,6 @@
           </form>
         </div>
 
-        <!-- RECHTER BEREICH: DIE ERGEBNISSE -->
         <aside class="results-aside">
           <h2 class="results-title">
             Survey results <span class="results-title__live">LIVE</span>

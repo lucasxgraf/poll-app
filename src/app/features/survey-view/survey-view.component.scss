@@ -78,22 +78,24 @@
   width: 100%;
 
   &:hover { 
-    background-color: $color-accent; 
+    background-color: $color-light-accent; 
   }
 
-  .custom-checkbox {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba($color-text-dark, 0.2);
-    border-radius: 4px;
-    background-color: white;
-    @include flex-layout();
+  .checkbox-visual {
+    height: 24px;
+    width: 24px;
+    background-color: $color-bg-light-purple;
+    border-radius: 6px;
+    @include flex-layout(row, center, center);
+    flex-shrink: 0;
 
-    &__inner {
-      width: 10px;
-      height: 10px;
-      background-color: $color-text-dark;
-      border-radius: 1px;
+    &--checked {
+      background-color: $color-accent;
+      
+      .checkbox-visual__icon {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 
@@ -113,15 +115,17 @@
 
 .results-aside {
   color: $color-bg-white;
+  text-align: center;
 
   .results-title {
     font-size: 1.75rem;
     color: $color-bg-white;
+    font-family: $font-nerko-one;
     margin-bottom: 32px;
-
+    
     &__live { 
+      font-size: 1.75rem;
       color: $color-accent; 
-      margin-left: 8px; 
     }
   }
 
