@@ -1,4 +1,3 @@
-// features/survey-view/survey-view.component.ts
 import { Component, inject, OnInit, signal, input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -7,14 +6,16 @@ import { FullSurvey, VoteInput, Vote } from '../../shared/models/poll.interface'
 import { ToastService } from '../../core/services/toast.service';
 import { ButtonComponent } from '../../shared/ui/button/button';
 import { BadgeComponent } from '../../shared/ui/badge/badge';
-import { Toast } from '../../shared/ui/toast/toast';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { AuthService } from '../../core/services/auth.service';
+import { HeaderComponent } from '../../core/layout/header/header';
+import { HeaderService } from '../../core/services/header.service';
+
 
 @Component({
   selector: 'app-survey-view',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, BadgeComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, BadgeComponent, HeaderComponent],
   templateUrl: './survey-view.component.html',
   styleUrl: './survey-view.component.scss'
 })
@@ -24,6 +25,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private voteChannel: RealtimeChannel | null = null;
   private authService = inject(AuthService);
+  private headerService = inject(HeaderService);
   
   id = input.required<string>();
   survey = signal<FullSurvey | null>(null);
@@ -35,6 +37,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   surveyForm: FormGroup = this.fb.group({});
 
   async ngOnInit() {
+    this.headerService.setCreateButtonVisible(true);
     const data = await this.loadSurvey();
     
     if (data) {

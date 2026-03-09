@@ -2,12 +2,22 @@
   <div class="container">
     
     @if (isLoading()) {
-      <div class="loading-state">Loading survey...</div>
+      <div class="survey-grid">
+        <div class="survey-card survey-card--loading">
+          <div class="skeleton-loader">
+            <div class="skeleton-loader__title"></div>
+            <div class="skeleton-loader__text"></div>
+            <div class="skeleton-loader__text"></div>
+          </div>
+          <p class="loading-text">Loading survey details...</p>
+        </div>
+        <aside class="results-aside">
+        </aside>
+      </div>
     } @else if (survey(); as survey) {
-      
       <div class="survey-grid">
         <div class="survey-card">
-          <header class="survey-card__header">
+          <div class="survey-card__header">
             <app-badge variant="primary">Published</app-badge>
             <div class="header-meta">
               <span class="meta-text">Ends on {{ survey.expires_at | date:'dd.MM.yyyy' }}</span>
@@ -16,7 +26,7 @@
             
             <h1 class="survey-card__title">{{ survey.title }}</h1>
             <p class="survey-card__description">{{ survey.description }}</p>
-          </header>
+          </div>
 
           <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
             <div class="questions-grid">

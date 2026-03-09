@@ -5,6 +5,7 @@ import { InputFieldComponent } from '../../../shared/components/input-field/inpu
 import { Category } from '../../../shared/models/poll.interface';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { PollService } from '../../../core/services/poll.service';
+import { HeaderService } from '../../../core/services/header.service';
 
 @Component({
   selector: 'app-survey-data',
@@ -17,9 +18,14 @@ import { PollService } from '../../../core/services/poll.service';
 export class SurveyDataComponent {
   private parentContainer = inject(ControlContainer);
   private pollService = inject(PollService);
+  private headerService = inject(HeaderService);
   categories = input.required<Category[]>();
   isDropdownOpen = signal(false);
   selectedCategory = signal<string | null>(null);
+
+  ngOnInit() {
+    this.headerService.setCreateButtonVisible(false);
+  }
 
   get parentForm() {
     return (this.parentContainer as FormGroupDirective).form;

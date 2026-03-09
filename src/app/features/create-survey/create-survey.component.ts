@@ -89,18 +89,18 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   private async processSurveySubmission(userId: string) {
-    this.isLoading.set(true);
-    
-    const surveyData = this.surveyForm.getRawValue() as CreateSurveyInput;
-    const result = await this.pollService.createFullSurvey(surveyData, userId);
+  this.isLoading.set(true);
+  
+  const surveyData = this.surveyForm.getRawValue() as CreateSurveyInput;
+  const result = await this.pollService.createFullSurvey(surveyData, userId);
 
-    if (result.success) {
-      await this.toastService.show('Your survey is now published');
-      this.router.navigate(['/survey', result.id]);
-    } else {
-      this.handleSubmissionError();
-    }
+  if (result.success && result.id) {
+    this.toastService.show('Your survey is now published');
+    this.router.navigate(['/survey', result.id]);
+  } else {
+    this.handleSubmissionError();
   }
+}
 
   private handleSubmissionError() {
     alert('Fehler beim Speichern. Bitte versuche es erneut.');

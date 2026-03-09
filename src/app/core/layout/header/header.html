@@ -4,6 +4,11 @@
       <img src="assets/logo/logo.svg" alt="Poll app logo" class="header__logo-img">
     </a>
     <div class="header__action">
+      @if (headerService.showCreateButton()) {
+        <app-button variant="primary" routerLink="/create-survey">
+          Create survey
+        </app-button>
+      }
       <ng-content select="[rightSide]"></ng-content>
     </div>
   </div>
