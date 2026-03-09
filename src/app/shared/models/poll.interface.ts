@@ -51,3 +51,16 @@ export interface CreateSurveyInput {
   expires_at: string | null;
   questions: CreateQuestionInput[];
 }
+
+export interface Vote {
+  id: string;
+  poll_id: string;
+  option_id: string; 
+  voter_id: string;
+  created_at: string; 
+}
+
+export interface VoteInput {
+  poll_id: string;
+  option_id: string;
+}

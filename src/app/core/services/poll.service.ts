@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput, FullSurvey } from '../../shared/models/poll.interface';
+import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput, FullSurvey, VoteInput, Vote } from '../../shared/models/poll.interface';
+import { RealtimeChannel, RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,6 @@ export class PollService {
     const defaultDate = new Date();
     defaultDate.setDate(defaultDate.getDate() + 14);
     const fallbackDateString = defaultDate.toISOString().split('T')[0];
-
 
     const { data, error } = await this.supabase
       .from('surveys')
@@ -84,6 +84,33 @@ export class PollService {
     if (error) throw error;
   }
 
+  async submitVotes(votes: VoteInput[]) {
+    try {
+      const { error } = await this.supabase
+        .from('votes')
+        .insert(votes);
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error submitting votes:', error);
+      return { success: false, error };
+    }
+  }
+
+  async hasUserVoted(questionIds: string[], userId: string): Promise<boolean> {
+    const { data, error } = await this.supabase
+      .from('votes')
+      .select('id')
+      .in('poll_id', questionIds)
+      .eq('voter_id', userId)
+      .limit(1);
+
+    if (error) return false;
+    return !!(data && data.length > 0);
+  }
+
   async fetchAllSurveys() {
     const { data, error } = await this.supabase
       .from('surveys')
@@ -128,5 +155,33 @@ export class PollService {
     }
 
     this.categoriesSignal.set(data as Category[]);
+  }
+
+  async fetchVotesForQuestions(questionIds: string[]): Promise<Vote[]> {
+    const { data, error } = await this.supabase
+      .from('votes')
+      .select('*')
+      .in('poll_id', questionIds);
+
+    if (error) {
+      console.error('Error fetching votes:', error);
+      return [];
+    }
+    return data as Vote[];
+  }
+
+  subscribeToVotes(callback: (payload: RealtimePostgresInsertPayload<Vote>) => void): RealtimeChannel {
+    return this.supabase
+      .channel('votes-realtime')
+      .on<Vote>(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'votes'
+        },
+        (payload) => callback(payload)
+      )
+      .subscribe();
   }
 }

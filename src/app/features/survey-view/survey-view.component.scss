@@ -118,13 +118,13 @@
   text-align: center;
 
   .results-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
     color: $color-bg-white;
     font-family: $font-nerko-one;
     margin-bottom: 32px;
     
     &__live { 
-      font-size: 1.75rem;
+      font-size: 2rem;
       color: $color-accent; 
     }
   }
@@ -137,9 +137,61 @@
       text-align: center;
     }
   }
+
+  .results-list {
+    @include flex-layout(column, flex-start, stretch, 40px);
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .result-item {
+    &__question {
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: white;
+    }
+  }
+
+  .bars-container {
+    @include flex-layout(column, flex-start, stretch, 16px);
+  }
+
+  .bar-row {
+    @include flex-layout(row, space-between, center, 12px);
+
+    &__letter {
+      font-weight: 700;
+      width: 12px;
+    }
+
+    .bar-wrapper {
+      flex: 1;
+      height: 12px;
+      background-color: rgba(white, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-visual {
+      height: 100%;
+      background-color: $color-accent;
+      border-radius: 10px;
+      
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+
+    &__percentage {
+      font-weight: 600;
+      text-align: right;
+    }
+  }
 }
 
 .survey-card__footer {
   margin-top: 60px;
   @include flex-layout(row, flex-end);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
