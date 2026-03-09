@@ -4,19 +4,54 @@
   height: calc(100vh - 100px);
   overflow: hidden;
 
+  @include respond-below($bp-tablet) {
+    height: auto;
+    min-height: calc(100vh - 100px);
+  }
+
+  @include respond-below($bp-mobile) {
+    min-height: calc(100vh - 70px);
+  }
+
   &__wrapper {
     @include flex-layout(row, space-between, center, 40px);
     height: calc(100% - 100px);
+
+    @include respond-below($bp-tablet) {
+      flex-direction: column;
+      height: auto;
+      padding: 48px 0;
+      gap: 32px;
+    }
+
+    @include respond-below($bp-mobile) {
+      padding: 32px 0;
+      gap: 24px;
+    }
   }
 
   &__content {
     @include flex-layout(column, center, flex-start, 40px);
+
+    @include respond-below($bp-tablet) {
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
 
     h1 {
       font-size: 5rem;
       font-family: $font-nerko-one;
       font-weight: 900;
       color: $color-accent;
+
+      @include respond-below($bp-tablet) {
+        font-size: 3rem;
+      }
+
+      @include respond-below($bp-small) {
+        font-size: 2.25rem;
+      }
     }
   }
 
@@ -24,11 +59,24 @@
     font-size: 1.5rem;
     font-family: $font-mulish;
     max-width: 600px;
+
+    @include respond-below($bp-tablet) {
+      font-size: 1.125rem;
+    }
+
+    @include respond-below($bp-mobile) {
+      font-size: 1rem;
+    }
   }
 
   &__visual {
     flex: 1;
     @include flex-layout(row, center, center);
+
+    @include respond-below($bp-tablet) {
+      flex: none;
+      width: 100%;
+    }
   }
 
   &__visual-container {
@@ -41,6 +89,14 @@
     max-width: 380px;
     height: auto;
     z-index: 1;
+
+    @include respond-below($bp-tablet) {
+      max-width: 280px;
+    }
+
+    @include respond-below($bp-small) {
+      max-width: 200px;
+    }
   }
 
   &__icon {
@@ -50,27 +106,39 @@
     pointer-events: none;
 
     &--typing {
-      @include absolute-pos($top: 5%, $left: -25%);
+      @include absolute-pos($top: 5%, $left: 0%);
       width: 150px;
       animation: float-y 5s ease-in-out infinite;
+
+      @include respond-below($bp-tablet) { width: 100px; }
+      @include respond-below($bp-small) { width: 70px; }
     }
 
     &--check {
-      @include absolute-pos($bottom: 20%, $left: -15%);
+      @include absolute-pos($bottom: 20%, $left: 0%);
       width: 80px;
       animation: float-y 4s ease-in-out infinite reverse;
+
+      @include respond-below($bp-tablet) { width: 55px; }
+      @include respond-below($bp-small) { width: 40px; }
     }
 
     &--star {
-      @include absolute-pos($bottom: 10%, $right: -10%);
+      @include absolute-pos($bottom: 10%, $right: 0%);
       width: 70px;
       animation: float-rotate 6s ease-in-out infinite 0.5s;
+
+      @include respond-below($bp-tablet) { width: 50px; }
+      @include respond-below($bp-small) { width: 35px; }
     }
 
     &--question {
-      @include absolute-pos($top: 15%, $right: -15%);
+      @include absolute-pos($top: 15%, $right: 0%);
       width: 90px;
       animation: float-y 7s ease-in-out infinite 1s;
+
+      @include respond-below($bp-tablet) { width: 60px; }
+      @include respond-below($bp-small) { width: 45px; }
     }
   }
 }

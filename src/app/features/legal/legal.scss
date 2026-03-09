@@ -3,7 +3,11 @@
 :host {
   display: block;
   background-color: $color-bg-purple;
-  min-height: calc(100vh - 100px - 188px);
+  min-height: calc(100vh - 100px - 189px);
+
+  @include respond-below($bp-mobile) {
+    min-height: calc(100vh - 70px - 140px);
+  }
 }
 
 .legal-page {
@@ -11,6 +15,9 @@
   color: $color-bg-white;
   font-family: $font-mulish;
 
+  @include respond-below($bp-mobile) {
+    padding: 24px 0;
+  }
 
   &__title {
     font-family: $font-nerko-one;
@@ -19,13 +26,23 @@
     margin-bottom: 56px;
     text-align: center;
 
-    @media (max-width: 580px) {
-        font-size: 3rem;
-      }
+    @include respond-below($bp-tablet) {
+      font-size: 3rem;
+      margin-bottom: 32px;
+    }
+
+    @include respond-below($bp-mobile) {
+      font-size: 2.25rem;
+      margin-bottom: 24px;
+    }
   }
 
   &__section {
     margin-bottom: 40px;
+
+    @include respond-below($bp-mobile) {
+      margin-bottom: 24px;
+    }
     
     h2 {
       font-size: 2rem;
@@ -33,7 +50,7 @@
       margin-bottom: 16px;
       font-weight: 700;
 
-      @media (max-width: 580px) {
+      @include respond-below($bp-tablet) {
         font-size: 1.5rem;
       }
     }

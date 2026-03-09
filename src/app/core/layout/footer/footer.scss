@@ -7,8 +7,18 @@
   color: rgba($color-bg-white, 0.6);
   font-family: $font-mulish;
 
+  @include respond-below($bp-mobile) {
+    padding: 32px 0;
+  }
+
   &__wrapper {
     @include flex-layout(row, space-between, center, 20px);
+
+    @include respond-below($bp-tablet) {
+      flex-direction: column;
+      gap: 24px;
+      text-align: center;
+    }
   }
 
   &__section {
@@ -16,6 +26,11 @@
     
     &--links {
       @include flex-layout(column, flex-start, flex-start, 24px);
+
+      @include respond-below($bp-tablet) {
+        align-items: center;
+        gap: 16px;
+      }
     }
 
     &--copyright {
@@ -25,6 +40,10 @@
 
     &--logo {
       @include flex-layout(row, flex-end, center);
+
+      @include respond-below($bp-tablet) {
+        justify-content: center;
+      }
     }
   }
 
@@ -44,6 +63,10 @@
     height: 60px;
     transition: all 0.3s ease;
     cursor: pointer;
+
+    @include respond-below($bp-mobile) {
+      height: 40px;
+    }
 
     &:hover {
       opacity: 0.8;

@@ -5,9 +5,21 @@
   color: $color-bg-white;
   background-color: $color-bg-purple;
 
+  @include respond-below($bp-tablet) {
+    padding: 40px 0;
+  }
+
+  @include respond-below($bp-mobile) {
+    padding: 24px 0;
+  }
+
   &__header {
     border-bottom: 1px solid rgba($color-bg-white, 0.1);
     padding-bottom: 40px;
+
+    @include respond-below($bp-mobile) {
+      padding-bottom: 24px;
+    }
   }
 
   &__title {
@@ -15,6 +27,14 @@
     font-size: 4rem;
     color: $color-accent;
     margin-bottom: 16px;
+
+    @include respond-below($bp-tablet) {
+      font-size: 3rem;
+    }
+
+    @include respond-below($bp-mobile) {
+      font-size: 2.25rem;
+    }
   }
 
   &__intro {
@@ -30,6 +50,11 @@
       font-weight: 800;
       border-left: 4px solid $color-primary;
       padding-left: 16px;
+
+      @include respond-below($bp-tablet) {
+        font-size: 1.5rem;
+        margin: 32px 0 16px;
+      }
     }
 
     h3 {
@@ -37,6 +62,11 @@
       color: $color-bg-white;
       margin: 32px 0 16px;
       font-weight: 700;
+
+      @include respond-below($bp-tablet) {
+        font-size: 1.25rem;
+        margin: 24px 0 12px;
+      }
     }
 
     h4 {
@@ -67,6 +97,7 @@
       color: $color-primary;
       text-decoration: underline;
       transition: color 0.3s ease;
+      word-break: break-word;
 
       &:hover {
         color: $color-accent;

@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, OnDestroy } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { Survey, Category, CreateSurveyInput, CreateQuestionInput, CreateOptionInput, FullSurvey, VoteInput, Vote } from '../../shared/models/poll.interface';
 import { RealtimeChannel, RealtimePostgresInsertPayload } from '@supabase/supabase-js';
@@ -6,7 +6,7 @@ import { RealtimeChannel, RealtimePostgresInsertPayload } from '@supabase/supaba
 @Injectable({
   providedIn: 'root',
 })
-export class PollService {
+export class PollService implements OnDestroy {
   private supabase = inject(SupabaseService).client;
 
   private surveysSignal = signal<Survey[]>([]);
@@ -14,6 +14,8 @@ export class PollService {
 
   private categoriesSignal = signal<Category[]>([]);
   categories = this.categoriesSignal.asReadonly();
+
+  private surveyChannel: RealtimeChannel | null = null;
 
   async createFullSurvey(formData: CreateSurveyInput, userId: string) {
     try {
@@ -125,6 +127,10 @@ export class PollService {
       return;
     }
     this.surveysSignal.set(data as Survey[]);
+
+    if (!this.surveyChannel) {
+      this.surveyChannel = this.subscribeToSurveys();
+    }
   }
 
   async fetchSurveyById(id: string): Promise<FullSurvey | null> {
@@ -161,31 +167,71 @@ export class PollService {
     this.categoriesSignal.set(data as Category[]);
   }
 
+  
   async fetchVotesForQuestions(questionIds: string[]): Promise<Vote[]> {
     const { data, error } = await this.supabase
-      .from('votes')
-      .select('*')
-      .in('poll_id', questionIds);
-
+    .from('votes')
+    .select('*')
+    .in('poll_id', questionIds);
+    
     if (error) {
       console.error('Error fetching votes:', error);
       return [];
     }
     return data as Vote[];
   }
-
-  subscribeToVotes(callback: (payload: RealtimePostgresInsertPayload<Vote>) => void): RealtimeChannel {
-    return this.supabase
-      .channel('votes-realtime')
-      .on<Vote>(
+  
+  private subscribeToSurveys(): RealtimeChannel {
+    const channel = this.supabase
+      .channel('public-surveys-changes')
+      .on(
         'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'votes'
-        },
-        (payload) => callback(payload)
+        { event: '*', schema: 'public', table: 'surveys' },
+        (payload) => this.handleSurveyChange(payload)
       )
       .subscribe();
+      
+    return channel;
+  }
+
+  private handleSurveyChange(payload: any) {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+
+    this.surveysSignal.update(currentSurveys => {
+      switch (eventType) {
+        case 'INSERT':
+          return [newRecord as Survey, ...currentSurveys];
+
+        case 'UPDATE':
+          return currentSurveys.map(s => s.id === newRecord.id ? (newRecord as Survey) : s);
+
+        case 'DELETE':
+          return currentSurveys.filter(s => s.id === oldRecord.id);
+
+        default:
+          return currentSurveys;
+      }
+    });
+  }
+
+  subscribeToVotes(surveyId: string, callback: (payload: RealtimePostgresInsertPayload<Vote>) => void): RealtimeChannel {
+  return this.supabase
+    .channel(`votes-realtime-${surveyId}`) 
+    .on<Vote>(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'votes'
+      },
+      (payload) => callback(payload)
+    )
+    .subscribe();
+}
+
+  ngOnDestroy() {
+    if (this.surveyChannel) {
+      this.surveyChannel.unsubscribe();
+    }
   }
 }
