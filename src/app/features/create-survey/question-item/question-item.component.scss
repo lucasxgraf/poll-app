@@ -115,9 +115,13 @@
 }
 
 .add-answer-btn {
+  align-self: flex-start;
+  
   ::ng-deep .ui-btn--tertiary {
+    width: auto;
     color: $color-bg-white !important;
     @include flex-layout(row, flex-start, center, 8px);
+    padding: 8px 0;
     
     svg path {
       fill: $color-bg-white;

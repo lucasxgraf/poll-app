@@ -29,7 +29,7 @@ export class CreateSurveyComponent implements OnInit {
   isLoading = signal(false);
 
   surveyForm = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(6)]],
+    title: ['', [Validators.required]],
     description: [''],
     expires_at: ['', [dateValidator()]],
     category: ['', Validators.required],
@@ -60,7 +60,21 @@ export class CreateSurveyComponent implements OnInit {
   }
 
   removeQuestion(index: number) {
-    if (this.questions.length > 1) this.questions.removeAt(index);
+    if (index === 0) {
+      this.clearFirstQuestion();
+    } else {
+      this.questions.removeAt(index);
+    }
+  }
+
+  private clearFirstQuestion() {
+    const firstQuestion = this.questions.at(0) as FormGroup;
+    
+    firstQuestion.get('question_text')?.reset('');
+    firstQuestion.get('allow_multiple')?.reset(false);
+    
+    const options = firstQuestion.get('options') as FormArray;
+    options.controls.forEach(control => control.reset({ label: '' }));
   }
 
   async onSubmit() {

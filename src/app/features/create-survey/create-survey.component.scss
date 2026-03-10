@@ -91,7 +91,6 @@
 
   &__actions {
     height: 56px;
-    margin-top: 24px;
     @include flex-layout(row, flex-start, center);
   }
 }
