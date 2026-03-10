@@ -17,6 +17,11 @@ export class ToastService {
     this.scheduleFinalCleanup();
   }
 
+  hide(): void {
+    this.updateVisibility(false);
+    this.scheduleFinalCleanup();
+  }
+
   private initializeToast(message: string): void {
     this.toast.set({ message, visible: false });
   }
