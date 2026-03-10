@@ -29,6 +29,10 @@ export class AuthService {
     return await this.supabase.auth.signInWithPassword({ email, password: pass });
   }
 
+  async signInAnonymously() {
+    return await this.supabase.auth.signInAnonymously();
+  }
+
   async signOut() {
     await this.supabase.auth.signOut();
   }

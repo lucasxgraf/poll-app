@@ -45,6 +45,10 @@
     }
   }
 
+  &__actions{
+    @include flex-layout(row, space-between, center, 16px);
+  }
+    
   &__supabase-container{
     @include flex-layout(row, space-between, center, 16px);
 

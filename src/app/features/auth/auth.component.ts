@@ -32,7 +32,7 @@ export class AuthComponent {
     return this.authForm.controls.email; 
   }
   
-    get passCtrl() { 
+  get passCtrl() { 
     return this.authForm.controls.password; 
   }
 
@@ -60,8 +60,26 @@ export class AuthComponent {
       this.errorMessage.set(result.error.message);
       this.isLoading.set(false);
     } else {
-      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-      this.router.navigateByUrl(returnUrl);
+      this.navigateAfterAuth();
     }
+  }
+
+  async onGuestLogin() {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    const result = await this.authService.signInAnonymously();
+
+    if (result.error) {
+      this.errorMessage.set(result.error.message);
+      this.isLoading.set(false);
+    } else {
+      this.navigateAfterAuth();
+    }
+  }
+
+  private navigateAfterAuth() {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.router.navigateByUrl(returnUrl);
   }
 }

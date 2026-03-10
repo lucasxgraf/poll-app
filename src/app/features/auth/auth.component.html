@@ -25,20 +25,28 @@
       </app-input-field>
 
       
-      <div class="auth__supabase-container">
+      <div class="auth__actions">
         <app-button 
           type="submit" 
           variant="primary" 
           [disabled]="isLoading()">
           {{ isLoading() ? 'Loading...' : (isLoginMode() ? 'Login' : 'Sign Up') }}
         </app-button>
-      
-        @if (errorMessage()) {
-          <div class="auth__supabase-error auth__supabase-error--visible">
-            {{ errorMessage() }}
-          </div>
-        }
+
+        <app-button 
+          type="button" 
+          variant="primary" 
+          (click)="onGuestLogin()"
+          [disabled]="isLoading()">
+          Enter as Guest
+        </app-button>
       </div>
+
+      @if (errorMessage()) {
+        <div class="auth__supabase-error auth__supabase-error--visible">
+          {{ errorMessage() }}
+        </div>
+      }
     </form>
 
     <button type="button" class="auth__toggle-btn" (click)="toggleMode()">
