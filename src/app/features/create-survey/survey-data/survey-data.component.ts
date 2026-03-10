@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, computed } from '@angular/core';
+import { Component, inject, input, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { InputFieldComponent } from '../../../shared/components/input-field/input-field.component';
@@ -15,20 +15,22 @@ import { HeaderService } from '../../../core/services/header.service';
   styleUrl: './survey-data.component.scss',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }]
 })
-export class SurveyDataComponent {
+export class SurveyDataComponent implements OnInit {
   private parentContainer = inject(ControlContainer);
   private pollService = inject(PollService);
   private headerService = inject(HeaderService);
+
   categories = input.required<Category[]>();
   isDropdownOpen = signal(false);
   selectedCategory = signal<string | null>(null);
 
+  get parentForm() { return (this.parentContainer as FormGroupDirective).form; }
+  get categoryControl() { return this.parentForm.get('category'); }
+
+  categoryOptions = computed(() => this.pollService.categories().map(c => c.name));
+
   ngOnInit() {
     this.headerService.setCreateButtonVisible(false);
-  }
-
-  get parentForm() {
-    return (this.parentContainer as FormGroupDirective).form;
   }
 
   toggleDropdown() {
@@ -37,75 +39,61 @@ export class SurveyDataComponent {
 
   selectCategory(category: string) {
     this.selectedCategory.set(category);
-    this.parentForm.patchValue({ category: category });
+    this.parentForm.patchValue({ category });
     this.isDropdownOpen.set(false);
   }
 
-  categoryOptions = computed(() => {
-    const dbCategories = this.pollService.categories().map(c => c.name);
-    return dbCategories;
-  });
-
   clearField(controlName: string) {
     this.parentForm.get(controlName)?.setValue('');
-    if (controlName === 'category') {
-      this.selectedCategory.set(null);
-    }
+    if (controlName === 'category') this.selectedCategory.set(null);
   }
 
   onDateInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    let trimmed = input.value.replace(/[^0-9]/g, '');
-    
-    let formatted = '';
-    if (trimmed.length > 0) {
-      formatted += trimmed.substring(0, 4);
-      if (trimmed.length > 4) {
-        formatted += '-' + trimmed.substring(4, 6);
-      }
-      if (trimmed.length > 6) {
-        formatted += '-' + trimmed.substring(6, 8);
-      }
-    }
-
-    this.parentForm.get('expires_at')?.setValue(formatted.substring(0, 10), { emitEvent: false });
+    const formatted = this.formatToISODate(input.value);
+    this.parentForm.get('expires_at')?.setValue(formatted, { emitEvent: false });
   }
 
-  get categoryControl() {
-    return this.parentForm.get('category');
+  private formatToISODate(raw: string): string {
+    const digits = raw.replace(/\D/g, '');
+    return this.applyDateMask(digits).substring(0, 10);
+  }
+
+  private applyDateMask(d: string): string {
+    if (d.length <= 4) return d;
+    if (d.length <= 6) return `${d.slice(0, 4)}-${d.slice(4)}`;
+    return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`;
   }
 
   showCategoryError(): boolean {
-    const control = this.categoryControl;
-    return !!(control && control.invalid && (control.touched || control.dirty));
+    const ctrl = this.categoryControl;
+    return !!(ctrl?.invalid && (ctrl.touched || ctrl.dirty));
   }
 }
 
 export function dateValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
-    if (!value) return null;
+    const val = control.value;
+    if (!val) return null;
 
-    const dateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-    if (!dateRegex.test(value)) {
-      return { invalidDateFormat: true };
-    }
-
-    const [y, m, d] = value.split('-').map(Number);
-    const inputDate = new Date(y, m - 1, d);
-    const isValid = inputDate.getFullYear() === y && 
-                    inputDate.getMonth() === m - 1 && 
-                    inputDate.getDate() === d;
-
-    if (!isValid) return { invalidDate: true };
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (inputDate < today) {
-      return { pastDate: true };
-    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(val)) return { invalidDateFormat: true };
+    if (!isValidCalendarDate(val)) return { invalidDate: true };
+    if (isDateInPast(val)) return { pastDate: true };
 
     return null;
   };
+}
+
+function isValidCalendarDate(dateStr: string): boolean {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
+}
+
+function isDateInPast(dateStr: string): boolean {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const inputDate = new Date(y, m - 1, d);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return inputDate < today;
 }

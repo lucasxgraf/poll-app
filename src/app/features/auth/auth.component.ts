@@ -28,13 +28,8 @@ export class AuthComponent {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
-  get emailCtrl() { 
-    return this.authForm.controls.email; 
-  }
-  
-  get passCtrl() { 
-    return this.authForm.controls.password; 
-  }
+  get emailCtrl() { return this.authForm.controls.email; }
+  get passCtrl() { return this.authForm.controls.password; }
 
   toggleMode() {
     this.isLoginMode.update(value => !value);
@@ -42,43 +37,54 @@ export class AuthComponent {
   }
 
   async onSubmit() {
-    if (this.authForm.invalid) {
-      this.authForm.markAllAsTouched();
-      return;
-    }
+    if (this.isFormInvalid()) return;
 
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
+    this.prepareAuthState();
     const { email, password } = this.authForm.getRawValue();
     
-    const result = this.isLoginMode() 
-      ? await this.authService.signIn(email, password)
-      : await this.authService.signUp(email, password);
-
-    if (result.error) {
-      this.errorMessage.set(result.error.message);
-      this.isLoading.set(false);
-    } else {
-      this.navigateAfterAuth();
-    }
+    const result = await this.executeEmailPasswordAuth(email, password);
+    this.handleAuthResponse(result);
   }
 
   async onGuestLogin() {
+    this.prepareAuthState();
+    const result = await this.authService.signInAnonymously();
+    this.handleAuthResponse(result);
+  }
+
+  private isFormInvalid(): boolean {
+    if (this.authForm.invalid) {
+      this.authForm.markAllAsTouched();
+      return true;
+    }
+    return false;
+  }
+
+  private prepareAuthState(): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
+  }
 
-    const result = await this.authService.signInAnonymously();
+  private async executeEmailPasswordAuth(email: string, pass: string) {
+    return this.isLoginMode() 
+      ? await this.authService.signIn(email, pass)
+      : await this.authService.signUp(email, pass);
+  }
 
+  private handleAuthResponse(result: { error?: any }): void {
     if (result.error) {
-      this.errorMessage.set(result.error.message);
-      this.isLoading.set(false);
+      this.handleAuthFailure(result.error.message);
     } else {
-      this.navigateAfterAuth();
+      this.handleAuthSuccess();
     }
   }
 
-  private navigateAfterAuth() {
+  private handleAuthFailure(message: string): void {
+    this.errorMessage.set(message);
+    this.isLoading.set(false);
+  }
+
+  private handleAuthSuccess(): void {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     this.router.navigateByUrl(returnUrl);
   }

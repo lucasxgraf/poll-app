@@ -10,7 +10,6 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 import { AuthService } from '../../core/services/auth.service';
 import { HeaderService } from '../../core/services/header.service';
 
-
 @Component({
   selector: 'app-survey-view',
   standalone: true,
@@ -22,77 +21,61 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   private pollService = inject(PollService);
   private fb = inject(FormBuilder);
   private toastService = inject(ToastService);
-  private voteChannel: RealtimeChannel | null = null;
   private authService = inject(AuthService);
   private headerService = inject(HeaderService);
+  private voteChannel: RealtimeChannel | null = null;
   
   id = input.required<string>();
   survey = signal<FullSurvey | null>(null);
-  isSubmitting = signal<boolean>(false);
-  isLoading = signal<boolean>(true);
-  hasVoted = signal<boolean>(false);
   allVotes = signal<Vote[]>([]);
+  isSubmitting = signal(false);
+  isLoading = signal(true);
+  hasVoted = signal(false);
 
   surveyForm: FormGroup = this.fb.group({});
 
   async ngOnInit() {
     this.headerService.setCreateButtonVisible(true);
-    const data = await this.loadSurvey();
+    const data = await this.loadSurveyData();
     
     if (data) {
-      const user = this.authService.currentUser();
-      if (user) {
-        const questionIds = data.questions.map(q => q.id);
-        const alreadyVoted = await this.pollService.hasUserVoted(questionIds, user.id);
-        
-        if (alreadyVoted) {
-          this.hasVoted.set(true);
-          this.loadFromLocalStorage();
-          this.surveyForm.disable();
-        }
-      }
-
+      await this.checkUserVoteStatus(data);
       await this.loadInitialVotes(data);
       this.setupRealtimeVotes(data);
     }
   }
 
-  private saveToLocalStorage() {
-    const storageKey = `survey_selection_${this.id()}`;
-    const selection = this.surveyForm.getRawValue();
-    localStorage.setItem(storageKey, JSON.stringify(selection));
-  }
-
-  private loadFromLocalStorage() {
-    const storageKey = `survey_selection_${this.id()}`;
-    const saved = localStorage.getItem(storageKey);
-    
-    if (saved) {
-      const selection = JSON.parse(saved);
-      this.surveyForm.patchValue(selection);
-    }
-  }
-
-  private async loadSurvey(): Promise<FullSurvey | null> {
+  private async loadSurveyData(): Promise<FullSurvey | null> {
     this.isLoading.set(true);
     const data = await this.pollService.fetchSurveyById(this.id());
-    
     if (data) {
       this.survey.set(data);
-      this.buildForm(data);
-      this.isLoading.set(false);
-      return data;
+      this.initializeForm(data);
     }
-    
     this.isLoading.set(false);
-    return null;
+    return data;
   }
 
-  private buildForm(survey: FullSurvey) {
+  private initializeForm(survey: FullSurvey) {
     survey.questions.forEach(q => {
       const defaultValue = q.allow_multiple ? [] : '';
       this.surveyForm.addControl(q.id, this.fb.control(defaultValue, Validators.required));
     });
+  }
+
+  private async checkUserVoteStatus(survey: FullSurvey) {
+    const user = this.authService.currentUser();
+    if (!user) return;
+
+    const questionIds = survey.questions.map(q => q.id);
+    const alreadyVoted = await this.pollService.hasUserVoted(questionIds, user.id);
+    if (alreadyVoted) this.applyAlreadyVotedState();
+  }
+
+  private applyAlreadyVotedState() {
+    this.hasVoted.set(true);
+    this.loadSelectionFromStorage();
+    this.surveyForm.disable();
   }
 
   private async loadInitialVotes(survey: FullSurvey) {
@@ -102,34 +85,69 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   }
 
   private setupRealtimeVotes(survey: FullSurvey) {
+    const questionIds = survey.questions.map(q => q.id);
     this.voteChannel = this.pollService.subscribeToVotes(survey.id, (payload) => {
-      const newVote = payload.new;
-      
-      const questionIds = survey.questions.map(q => q.id);
-      if (questionIds.includes(newVote.poll_id)) {
-        this.allVotes.update(votes => [...votes, newVote]);
+      if (questionIds.includes(payload.new.poll_id)) {
+        this.allVotes.update(votes => [...votes, payload.new]);
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.voteChannel?.unsubscribe();
   }
 
   toggleOption(questionId: string, optionId: string, allowMultiple: boolean) {
     const control = this.surveyForm.get(questionId);
     if (!control) return;
 
-    if (!allowMultiple) {
-      control.setValue(optionId);
-    } else {
-      const current: string[] = control.value;
-      control.setValue(current.includes(optionId) 
-        ? current.filter(id => id !== optionId) 
-        : [...current, optionId]
-      );
-    }
+    const newValue = allowMultiple 
+      ? this.toggleInArray(control.value, optionId) 
+      : optionId;
+
+    control.setValue(newValue);
     control.markAsTouched();
+  }
+
+  private toggleInArray(current: string[], id: string): string[] {
+    return current.includes(id) ? current.filter(i => i !== id) : [...current, id];
+  }
+
+  async onSubmit() {
+    if (this.surveyForm.invalid) return this.surveyForm.markAllAsTouched();
+    
+    const user = this.authService.currentUser();
+    if (user) await this.performSubmission(user.id);
+  }
+
+  private async performSubmission(userId: string) {
+    this.isSubmitting.set(true);
+    const votes = this.mapFormToVotes();
+    const questionIds = this.survey()?.questions.map(q => q.id) || [];
+    
+    const result = await this.pollService.submitVotes(votes, userId, questionIds);
+    result.success ? await this.handleVoteSuccess() : alert(result.error);
+    
+    this.isSubmitting.set(false);
+  }
+
+  private mapFormToVotes(): VoteInput[] {
+    const formValues = this.surveyForm.getRawValue();
+    return Object.entries(formValues).flatMap(([questionId, value]) => {
+      const optionIds = Array.isArray(value) ? value : [value];
+      return optionIds.map(optionId => ({ poll_id: questionId, option_id: optionId }));
+    });
+  }
+
+  private async handleVoteSuccess() {
+    await this.toastService.show('Thanks for voting!');
+    this.saveSelectionToStorage();
+    this.applyAlreadyVotedState();
+  }
+
+  private saveSelectionToStorage() {
+    localStorage.setItem(`survey_selection_${this.id()}`, JSON.stringify(this.surveyForm.getRawValue()));
+  }
+
+  private loadSelectionFromStorage() {
+    const saved = localStorage.getItem(`survey_selection_${this.id()}`);
+    if (saved) this.surveyForm.patchValue(JSON.parse(saved));
   }
 
   isSelected(qId: string, oId: string): boolean {
@@ -137,78 +155,13 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     return Array.isArray(val) ? val.includes(oId) : val === oId;
   }
 
-async onSubmit() {
-  if (this.surveyForm.invalid) {
-    return this.handleInvalidForm();
-  }
-
-  await this.processVoteSubmission();
-}
-
-private handleInvalidForm() {
-  this.surveyForm.markAllAsTouched();
-}
-
-private async processVoteSubmission() {
-  const user = this.authService.currentUser();
-  if (!user) return;
-
-  this.isSubmitting.set(true);
-
-  const votes = this.mapFormToVotes();
-  const questionIds = this.survey()?.questions.map(q => q.id) || [];
-  
-  const result = await this.pollService.submitVotes(votes, user.id, questionIds);
-
-  if (result.success) {
-    await this.handleVoteSuccess();
-  } else {
-    alert(result.error); 
-  }
-
-  this.isSubmitting.set(false);
-}
-
-private mapFormToVotes(): VoteInput[] {
-  const formValues = this.surveyForm.value;
-  const votes: VoteInput[] = [];
-
-  Object.keys(formValues).forEach(questionId => {
-    const value = formValues[questionId];
-    const optionIds = Array.isArray(value) ? value : [value];
-    
-    optionIds.forEach(optionId => {
-      votes.push({ poll_id: questionId, option_id: optionId });
-    });
-  });
-
-  return votes;
-}
-
-  private async handleVoteSuccess() {
-    await this.toastService.show('Thanks for voting!');
-    this.saveToLocalStorage();
-    this.hasVoted.set(true);
-    this.surveyForm.disable();
-  }
-
-  private handleVoteError() {
-    alert('Something went wrong while voting. Please try again.');
-  }
-
-  getOptionVotes(optionId: string): number {
-    return this.allVotes().filter(v => v.option_id === optionId).length;
-  }
-
-  getQuestionTotalVotes(questionId: string): number {
-    return this.allVotes().filter(v => v.poll_id === questionId).length;
-  }
-
   getOptionPercentage(questionId: string, optionId: string): number {
-    const total = this.getQuestionTotalVotes(questionId);
-    if (total === 0) return 0;
+    const total = this.allVotes().filter(v => v.poll_id === questionId).length;
+    const votes = this.allVotes().filter(v => v.option_id === optionId).length;
+    return total > 0 ? Math.round((votes / total) * 100) : 0;
+  }
 
-    const votes = this.getOptionVotes(optionId);
-    return Math.round((votes / total) * 100);
+  ngOnDestroy() {
+    this.voteChannel?.unsubscribe();
   }
 }

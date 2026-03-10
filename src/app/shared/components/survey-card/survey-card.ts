@@ -18,19 +18,14 @@ export class SurveyCardComponent {
     const expiresAt = this.survey().expires_at;
     if (!expiresAt) return 'No limit';
 
-    const end = new Date(expiresAt);
-    const now = new Date();
-    const diffMs = end.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    const todayStr = new Date().toLocaleDateString('sv-SE');
+    const expiryStr = expiresAt.substring(0, 10);
 
-    if (diffDays < 0) {
-      return 'Expired';
-    } else if (diffDays === 0) {
-      return 'Ends today';
-    } else if (diffDays === 1) {
-      return 'Ends in 1 Day';
-    } else {
-      return `Ends in ${diffDays} Days`;
-    }
+    if (expiryStr < todayStr) return 'Expired';
+    if (expiryStr === todayStr) return 'Ends today';
+    
+    const diffMs = new Date(expiryStr).getTime() - new Date(todayStr).getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    return `Ends in ${diffDays} Days`;
   });
 }

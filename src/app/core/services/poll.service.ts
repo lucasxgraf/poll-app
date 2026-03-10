@@ -8,14 +8,12 @@ import { RealtimeChannel, RealtimePostgresInsertPayload } from '@supabase/supaba
 })
 export class PollService implements OnDestroy {
   private supabase = inject(SupabaseService).client;
-
   private surveysSignal = signal<Survey[]>([]);
-  surveys = this.surveysSignal.asReadonly();
-
   private categoriesSignal = signal<Category[]>([]);
-  categories = this.categoriesSignal.asReadonly();
-
   private surveyChannel: RealtimeChannel | null = null;
+  
+  surveys = this.surveysSignal.asReadonly();
+  categories = this.categoriesSignal.asReadonly();
 
   async createFullSurvey(formData: CreateSurveyInput, userId: string) {
     try {
@@ -92,7 +90,6 @@ export class PollService implements OnDestroy {
     if (alreadyVoted) {
       throw new Error('You have already participated in this survey.');
     }
-
     const { error } = await this.supabase
       .from('votes')
       .insert(votes);
@@ -201,13 +198,10 @@ export class PollService implements OnDestroy {
       switch (eventType) {
         case 'INSERT':
           return [newRecord as Survey, ...currentSurveys];
-
         case 'UPDATE':
           return currentSurveys.map(s => s.id === newRecord.id ? (newRecord as Survey) : s);
-
         case 'DELETE':
           return currentSurveys.filter(s => s.id === oldRecord.id);
-
         default:
           return currentSurveys;
       }
