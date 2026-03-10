@@ -17,7 +17,7 @@
       </div>
 
       <div class="categories__sort">
-        <div class="categories__dropdown">
+        <div class="categories__dropdown" #dropdownWrapper>
           <app-button variant="tertiary" (click)="toggleDropdown()">
             {{ selectedCategory() }}
             <img src="assets/svg/arrow_drop_down.svg" alt="icon dropdown" class="categories__dropdown-icon" [class.categories__dropdown-icon--open]="isDropdownOpen()">

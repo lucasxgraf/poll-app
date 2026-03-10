@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, input, signal, computed, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { InputFieldComponent } from '../../../shared/components/input-field/input-field.component';
@@ -19,6 +19,7 @@ export class SurveyDataComponent implements OnInit {
   private parentContainer = inject(ControlContainer);
   private pollService = inject(PollService);
   private headerService = inject(HeaderService);
+  private eRef = inject(ElementRef);
 
   categories = input.required<Category[]>();
   isDropdownOpen = signal(false);
@@ -28,6 +29,18 @@ export class SurveyDataComponent implements OnInit {
   get categoryControl() { return this.parentForm.get('category'); }
 
   categoryOptions = computed(() => this.pollService.categories().map(c => c.name));
+
+  @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.dropdownWrapper) return;
+
+    const clickedInside = this.dropdownWrapper.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.isDropdownOpen.set(false);
+    }
+  }
 
   ngOnInit() {
     this.headerService.setCreateButtonVisible(false);

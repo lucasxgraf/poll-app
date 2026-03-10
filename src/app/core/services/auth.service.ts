@@ -16,7 +16,6 @@ export class AuthService {
     });
 
     this.supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth State Change:', _event, session?.user);
       this.currentUser.set(session?.user ?? null);
     });
   }
