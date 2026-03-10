@@ -17,17 +17,9 @@ export class QuestionItemComponent {
   index = input.required<number>();
   removeQuestion = output<number>();
 
-  get questionsArray() {
-    return (this.parentContainer as FormGroupDirective).form.get('questions') as FormArray;
-  }
-
-  get questionGroup() {
-    return this.questionsArray.at(this.index()) as FormGroup;
-  }
-
-  get optionsArray() {
-    return this.questionGroup.get('options') as FormArray;
-  }
+  get questionsArray() { return (this.parentContainer as FormGroupDirective).form.get('questions') as FormArray; }
+  get questionGroup() { return this.questionsArray.at(this.index()) as FormGroup; }
+  get optionsArray() { return this.questionGroup.get('options') as FormArray; }
 
   addOption() {
     if (this.optionsArray.length < 6) { 
