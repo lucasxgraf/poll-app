@@ -1,52 +1,42 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { SurveyCardComponent } from '../../../shared/components/survey-card/survey-card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { PollService } from '../../../core/services/poll.service';
 import { RouterLink } from '@angular/router';
+import { Survey } from '../../../shared/models/poll.interface';
 
 @Component({
   selector: 'app-categories',
+  standalone: true,
   imports: [CommonModule, SurveyCardComponent, ButtonComponent, RouterLink],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss',
 })
-export class Categories {
+export class Categories implements OnInit {
   private pollService = inject(PollService);
+  
   currentFilter = signal<'active' | 'past'>('active');
-  isDropdownOpen = signal(false);
   selectedCategory = signal('All Categories');
+  isDropdownOpen = signal(false);
+
+  categoryOptions = computed(() => [
+    'All Categories', 
+    ...this.pollService.categories().map(c => c.name)
+  ]);
+
+  filteredSurveys = computed(() => {
+    const today = this.getTodayIsoString();
+    return this.pollService.surveys().filter(survey => this.isSurveyMatch(survey, today));
+  });
 
   ngOnInit() {
     this.pollService.fetchCategories();
     this.pollService.fetchAllSurveys();
   }
 
-  filteredSurveys = computed(() => {
-    const allSurveys = this.pollService.surveys();
-    const statusFilter = this.currentFilter();
-    const categoryFilter = this.selectedCategory();
-    const todayStr = new Date().toLocaleDateString('sv-SE'); 
-
-    return allSurveys.filter((survey) => {
-      if (!survey.expires_at) 
-        return statusFilter === 'active';
-      const expiryStr = survey.expires_at.substring(0, 10);
-      const isExpired = expiryStr < todayStr;
-
-      const matchesStatus = statusFilter === 'active' ? !isExpired : isExpired;
-      const matchesCategory = categoryFilter === 'All Categories' || survey.category === categoryFilter;
-
-      return matchesStatus && matchesCategory;
-    });
-  });
-
   setFilter(filter: 'active' | 'past') {
     this.currentFilter.set(filter);
-  }
-
-  toggleDropdown() {
-    this.isDropdownOpen.update(value => !value);
   }
 
   selectCategory(category: string) {
@@ -54,8 +44,31 @@ export class Categories {
     this.isDropdownOpen.set(false);
   }
 
-  categoryOptions = computed(() => {
-    const dbCategories = this.pollService.categories().map(c => c.name);
-    return ['All Categories', ...dbCategories];
-  });
+  toggleDropdown() {
+    this.isDropdownOpen.update(value => !value);
+  }
+
+  private isSurveyMatch(survey: Survey, today: string): boolean {
+    return this.matchesStatus(survey, today) && this.matchesCategory(survey);
+  }
+
+  private matchesStatus(survey: Survey, today: string): boolean {
+    const isExpired = this.checkIfExpired(survey, today);
+    return this.currentFilter() === 'active' ? !isExpired : isExpired;
+  }
+
+  private matchesCategory(survey: Survey): boolean {
+    const category = this.selectedCategory();
+    return category === 'All Categories' || survey.category === category;
+  }
+
+  private checkIfExpired(survey: Survey, today: string): boolean {
+    if (!survey.expires_at) return false;
+    const expiryDate = survey.expires_at.substring(0, 10);
+    return expiryDate < today;
+  }
+
+  private getTodayIsoString(): string {
+    return new Date().toLocaleDateString('sv-SE');
+  }
 }
