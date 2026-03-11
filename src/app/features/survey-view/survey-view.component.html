@@ -1,5 +1,11 @@
 <section class="survey-view">
   <div class="container">
+
+    @if (isExpired()) {
+      <div class="survey-view__status-banner survey-view__status-banner--expired">
+        <p>This survey is expired. Voting is no longer possible, but you can see the final results below.</p>
+      </div>
+    }
     
     @if (isLoading()) {
       <div class="survey-grid">

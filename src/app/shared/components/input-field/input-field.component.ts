@@ -16,6 +16,7 @@ export class InputFieldComponent {
   type = input<string>('text');
   control = input.required<FormControl<string>>();
   autocomplete = input<string>('off'); 
+  maxlength = input<number>(100);
 
   get showError(): boolean {
     const ctrl = this.control();

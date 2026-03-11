@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, input, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, signal, input, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PollService } from '../../core/services/poll.service';
@@ -34,15 +34,36 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
 
   surveyForm: FormGroup = this.fb.group({});
 
+  // Prüft, ob das Ablaufdatum in der Vergangenheit liegt
+  isExpired = computed(() => {
+    const s = this.survey();
+    if (!s?.expires_at) return false;
+    const today = new Date().toLocaleDateString('sv-SE');
+    return s.expires_at.substring(0, 10) < today;
+  });
+
   async ngOnInit() {
     this.headerService.setCreateButtonVisible(true);
     const data = await this.loadSurveyData();
     
     if (data) {
-      await this.checkUserVoteStatus(data);
+      this.handleSurveyState(data);
       await this.loadInitialVotes(data);
       this.setupRealtimeVotes(data);
     }
+  }
+
+  private handleSurveyState(survey: FullSurvey): void {
+    if (this.isExpired()) {
+      this.applyExpiredState();
+    } else {
+      this.checkUserVoteStatus(survey);
+    }
+  }
+
+  private applyExpiredState(): void {
+    this.hasVoted.set(true);
+    this.surveyForm.disable();
   }
 
   private async loadSurveyData(): Promise<FullSurvey | null> {
@@ -94,14 +115,11 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   }
 
   toggleOption(questionId: string, optionId: string, allowMultiple: boolean) {
+    if (this.surveyForm.disabled) return;
     const control = this.surveyForm.get(questionId);
     if (!control) return;
 
-    const newValue = allowMultiple 
-      ? this.toggleInArray(control.value, optionId) 
-      : optionId;
-
-    control.setValue(newValue);
+    control.setValue(allowMultiple ? this.toggleInArray(control.value, optionId) : optionId);
     control.markAsTouched();
   }
 
@@ -110,7 +128,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
-    if (this.surveyForm.invalid) return this.surveyForm.markAllAsTouched();
+    if (this.surveyForm.invalid || this.isExpired()) return this.surveyForm.markAllAsTouched();
     
     const user = this.authService.currentUser();
     if (user) await this.performSubmission(user.id);
@@ -119,10 +137,10 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   private async performSubmission(userId: string) {
     this.isSubmitting.set(true);
     const votes = this.mapFormToVotes();
-    const questionIds = this.survey()?.questions.map(q => q.id) || [];
+    const ids = this.survey()?.questions.map(q => q.id) || [];
     
-    const result = await this.pollService.submitVotes(votes, userId, questionIds);
-    result.success ? await this.handleVoteSuccess() : alert(result.error);
+    const result = await this.pollService.submitVotes(votes, userId, ids);
+    result.success ? await this.handleVoteSuccess() : this.toastService.show(result.error);
     
     this.isSubmitting.set(false);
   }
