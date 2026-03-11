@@ -29,7 +29,7 @@
         <app-button 
           type="submit" 
           variant="primary" 
-          [disabled]="isLoading()">
+          [disabled]="isSubmitDisabled">
           {{ isLoading() ? 'Loading...' : (isLoginMode() ? 'Login' : 'Sign Up') }}
         </app-button>
 

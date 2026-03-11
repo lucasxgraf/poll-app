@@ -7,7 +7,6 @@ import { ButtonComponent } from '../../shared/ui/button/button';
 import { InputFieldComponent } from "../../shared/components/input-field/input-field.component";
 import { Subject, takeUntil } from 'rxjs';
 
-
 @Component({
   selector: 'app-auth',
   standalone: true,
@@ -15,12 +14,11 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })
-export class AuthComponent implements OnInit, OnDestroy{
+export class AuthComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  
   private destroy = new Subject<void>();
 
   isLoginMode = signal(true);
@@ -28,10 +26,17 @@ export class AuthComponent implements OnInit, OnDestroy{
   isLoading = signal(false);
 
   authForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required, strictEmailValidator()]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    email: ['', { 
+      validators: [Validators.required, strictEmailValidator()],
+      updateOn: 'blur' 
+    }],
+    password: ['', { 
+      validators: [Validators.required, Validators.minLength(6)],
+      updateOn: 'blur' 
+    }]
   });
 
+  get isSubmitDisabled(): boolean { return this.authForm.invalid || this.isLoading(); }
   get emailCtrl() { return this.authForm.controls.email; }
   get passCtrl() { return this.authForm.controls.password; }
 
@@ -43,9 +48,7 @@ export class AuthComponent implements OnInit, OnDestroy{
     this.authForm.valueChanges
       .pipe(takeUntil(this.destroy))
       .subscribe(() => {
-        if (this.errorMessage()) {
-          this.errorMessage.set(null);
-        }
+        if (this.errorMessage()) this.errorMessage.set(null);
       });
   }
 
@@ -55,32 +58,32 @@ export class AuthComponent implements OnInit, OnDestroy{
   }
 
   toggleMode() {
-    this.isLoginMode.update(value => !value);
+    this.isLoginMode.update(v => !v);
     this.errorMessage.set(null);
   }
 
   async onSubmit() {
-    if (this.isFormInvalid()) return;
+    if (this.authForm.invalid) {
+      this.authForm.markAllAsTouched();
+      return;
+    }
+    await this.performAuthAction();
+  }
 
+  private async performAuthAction() {
     this.prepareAuthState();
     const { email, password } = this.authForm.getRawValue();
-    
-    const result = await this.executeEmailPasswordAuth(email, password);
+    const result = this.isLoginMode() 
+      ? await this.authService.signIn(email, password)
+      : await this.authService.signUp(email, password);
     this.handleAuthResponse(result);
   }
 
   async onGuestLogin() {
+    this.authForm.reset(); 
     this.prepareAuthState();
     const result = await this.authService.signInAnonymously();
     this.handleAuthResponse(result);
-  }
-
-  private isFormInvalid(): boolean {
-    if (this.authForm.invalid) {
-      this.authForm.markAllAsTouched();
-      return true;
-    }
-    return false;
   }
 
   private prepareAuthState(): void {
@@ -88,35 +91,31 @@ export class AuthComponent implements OnInit, OnDestroy{
     this.errorMessage.set(null);
   }
 
-  private async executeEmailPasswordAuth(email: string, pass: string) {
-    return this.isLoginMode() 
-      ? await this.authService.signIn(email, pass)
-      : await this.authService.signUp(email, pass);
-  }
-
   private handleAuthResponse(result: { error?: any }): void {
     if (result.error) {
-      this.handleAuthFailure(result.error.message);
+      this.errorMessage.set(result.error.message);
+      this.isLoading.set(false);
     } else {
-      this.handleAuthSuccess();
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+      this.router.navigateByUrl(returnUrl);
     }
-  }
-
-  private handleAuthFailure(message: string): void {
-    this.errorMessage.set(message);
-    this.isLoading.set(false);
-  }
-
-  private handleAuthSuccess(): void {
-    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.router.navigateByUrl(returnUrl);
   }
 }
 
 export function strictEmailValidator(): ValidatorFn {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) return null;
-    return emailRegex.test(control.value) ? null : { strictEmail: true };
+    const v = control.value;
+    if (!v) return null;
+
+    const [localPart, domainPart] = v.split('@');
+    
+    const isBasicValid = emailRegex.test(v);
+    const hasDoubleDots = v.includes('..');
+    const hasInvalidDots = v.startsWith('.') || localPart?.endsWith('.') || domainPart?.startsWith('.');
+    
+    const isValid = isBasicValid && !hasDoubleDots && !hasInvalidDots;
+    return isValid ? null : { strictEmail: true };
   };
 }
