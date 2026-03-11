@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ButtonComponent } from '../../shared/ui/button/button';
 import { InputFieldComponent } from "../../shared/components/input-field/input-field.component";
 import { Subject, takeUntil } from 'rxjs';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-auth',
@@ -20,6 +21,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroy = new Subject<void>();
+  private toastService = inject(ToastService)
 
   isLoginMode = signal(true);
   errorMessage = signal<string | null>(null);
@@ -95,10 +97,26 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (result.error) {
       this.errorMessage.set(result.error.message);
       this.isLoading.set(false);
-    } else {
-      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-      this.router.navigateByUrl(returnUrl);
+      return;
     }
+
+    if (!this.isLoginMode()) {
+      this.handleSignUpSuccess();
+    } else {
+      this.handleAuthSuccess();
+    }
+  }
+
+  private handleSignUpSuccess(): void {
+    this.toastService.show('You successfully created an account! You can login now.');
+    this.isLoading.set(false);
+    this.authForm.reset();
+    this.isLoginMode.set(true);
+  }
+
+  private handleAuthSuccess(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.router.navigateByUrl(returnUrl);
   }
 }
 

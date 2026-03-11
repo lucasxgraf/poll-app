@@ -87,38 +87,26 @@
           <h2 class="results-title">
             Survey results <span class="results-title__live">LIVE</span>
           </h2>
-
-          @if (!hasVoted()) {
-            <div class="results-placeholder">
-              <p class="results-placeholder__text">
-                Results will be shown here after participants complete the survey.
-              </p>
-              <div class="empty-state">
-                <p>There are no answers yet.</p>
-              </div>
-            </div>
-          } @else {
-            <div class="results-list">
-              @for (question of survey.questions; track question.id; let qIdx = $index) {
-                <div class="result-item">
-                  <h3 class="result-item__question">{{ qIdx + 1 }}. {{ question.question_text }}</h3>
-                  
-                  <div class="bars-container">
-                    @for (option of question.options; track option.id; let oIdx = $index) {
-                      @let percentage = getOptionPercentage(question.id, option.id);
-                      <div class="bar-row">
-                        <span class="bar-row__letter">{{ ['A','B','C','D','E','F'][oIdx] }}</span>
-                        <div class="bar-wrapper">
-                          <div class="bar-visual" [style.width.%]="percentage"></div> 
-                        </div>
-                        <span class="bar-row__percentage">{{ percentage }}%</span>
+          <div class="results-list">
+            @for (question of survey.questions; track question.id; let qIdx = $index) {
+              <div class="result-item">
+                <h3 class="result-item__question">{{ qIdx + 1 }}. {{ question.question_text }}</h3>
+                
+                <div class="bars-container">
+                  @for (option of question.options; track option.id; let oIdx = $index) {
+                    @let percentage = getOptionPercentage(question.id, option.id);
+                    <div class="bar-row">
+                      <span class="bar-row__letter">{{ ['A','B','C','D','E','F'][oIdx] }}</span>
+                      <div class="bar-wrapper">
+                        <div class="bar-visual" [style.width.%]="percentage"></div> 
                       </div>
-                    }
-                  </div>
+                      <span class="bar-row__percentage">{{ percentage }}%</span>
+                    </div>
+                  }
                 </div>
-              }
-            </div>
-          }
+              </div>
+            }
+          </div>
         </aside>
       </div>
     }

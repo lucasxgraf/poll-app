@@ -28,13 +28,16 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   id = input.required<string>();
   survey = signal<FullSurvey | null>(null);
   allVotes = signal<Vote[]>([]);
+  localSelection = signal<VoteInput[]>([]);
+  
   isSubmitting = signal(false);
   isLoading = signal(true);
   hasVoted = signal(false);
 
   surveyForm: FormGroup = this.fb.group({});
 
-  // Prüft, ob das Ablaufdatum in der Vergangenheit liegt
+  displayVotes = computed(() => [...this.allVotes(), ...this.localSelection()]);
+
   isExpired = computed(() => {
     const s = this.survey();
     if (!s?.expires_at) return false;
@@ -47,23 +50,10 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     const data = await this.loadSurveyData();
     
     if (data) {
-      this.handleSurveyState(data);
+      this.handleInitialState(data);
       await this.loadInitialVotes(data);
       this.setupRealtimeVotes(data);
     }
-  }
-
-  private handleSurveyState(survey: FullSurvey): void {
-    if (this.isExpired()) {
-      this.applyExpiredState();
-    } else {
-      this.checkUserVoteStatus(survey);
-    }
-  }
-
-  private applyExpiredState(): void {
-    this.hasVoted.set(true);
-    this.surveyForm.disable();
   }
 
   private async loadSurveyData(): Promise<FullSurvey | null> {
@@ -84,6 +74,14 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  private handleInitialState(survey: FullSurvey): void {
+    if (this.isExpired()) {
+      this.applyAlreadyVotedState();
+    } else {
+      this.checkUserVoteStatus(survey);
+    }
+  }
+
   private async checkUserVoteStatus(survey: FullSurvey) {
     const user = this.authService.currentUser();
     if (!user) return;
@@ -97,6 +95,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     this.hasVoted.set(true);
     this.loadSelectionFromStorage();
     this.surveyForm.disable();
+    this.localSelection.set([]);
   }
 
   private async loadInitialVotes(survey: FullSurvey) {
@@ -114,13 +113,15 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleOption(questionId: string, optionId: string, allowMultiple: boolean) {
+  toggleOption(qId: string, oId: string, multiple: boolean) {
     if (this.surveyForm.disabled) return;
-    const control = this.surveyForm.get(questionId);
+    const control = this.surveyForm.get(qId);
     if (!control) return;
 
-    control.setValue(allowMultiple ? this.toggleInArray(control.value, optionId) : optionId);
+    control.setValue(multiple ? this.toggleInArray(control.value, oId) : oId);
     control.markAsTouched();
+
+    this.localSelection.set(this.mapFormToVotes());
   }
 
   private toggleInArray(current: string[], id: string): string[] {
@@ -149,7 +150,7 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
     const formValues = this.surveyForm.getRawValue();
     return Object.entries(formValues).flatMap(([questionId, value]) => {
       const optionIds = Array.isArray(value) ? value : [value];
-      return optionIds.map(optionId => ({ poll_id: questionId, option_id: optionId }));
+      return optionIds.filter(id => !!id).map(id => ({ poll_id: questionId, option_id: id }));
     });
   }
 
@@ -165,7 +166,10 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
 
   private loadSelectionFromStorage() {
     const saved = localStorage.getItem(`survey_selection_${this.id()}`);
-    if (saved) this.surveyForm.patchValue(JSON.parse(saved));
+    if (saved) {
+      this.surveyForm.patchValue(JSON.parse(saved));
+      this.localSelection.set([]);
+    }
   }
 
   isSelected(qId: string, oId: string): boolean {
@@ -174,9 +178,10 @@ export class SurveyViewComponent implements OnInit, OnDestroy {
   }
 
   getOptionPercentage(questionId: string, optionId: string): number {
-    const total = this.allVotes().filter(v => v.poll_id === questionId).length;
-    const votes = this.allVotes().filter(v => v.option_id === optionId).length;
-    return total > 0 ? Math.round((votes / total) * 100) : 0;
+    const votes = this.displayVotes();
+    const total = votes.filter(v => v.poll_id === questionId).length;
+    const count = votes.filter(v => v.option_id === optionId).length;
+    return total > 0 ? Math.round((count / total) * 100) : 0;
   }
 
   ngOnDestroy() {

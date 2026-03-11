@@ -121,6 +121,7 @@
     width: max-content;
     @include flex-layout(row, center, center, 8px);
     text-decoration: none;
+    padding: 8px 0;
 
     &:hover {
       text-decoration: underline;
