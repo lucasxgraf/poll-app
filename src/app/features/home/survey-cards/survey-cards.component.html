@@ -7,7 +7,7 @@
     </header>
 
     <div class="survey__grid">
-      @for (item of surveys().slice(0,3); track item.id) {
+      @for (item of endingSoonSurveys().slice(0,3); track item.id) {
         <app-survey-card 
           [survey]="item"
           [routerLink]="['/survey', item.id]"

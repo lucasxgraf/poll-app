@@ -23,7 +23,6 @@ export class PollService implements OnDestroy {
 
       return { success: true, id: surveyId };
     } catch (error) {
-      console.error('Survey creation failed:', error);
       return { success: false, error };
     }
   }
@@ -97,7 +96,6 @@ export class PollService implements OnDestroy {
     if (error) throw error;
     return { success: true };
   } catch (error: any) {
-    console.error('Error submitting votes:', error);
     return { success: false, error: error.message || 'Unknown error' };
   }
 }
@@ -120,7 +118,6 @@ export class PollService implements OnDestroy {
       .select('*');
 
     if (error) {
-      console.error('Supabase Error:', error);
       return;
     }
     this.surveysSignal.set(data as Survey[]);
@@ -143,7 +140,6 @@ export class PollService implements OnDestroy {
       .single();
 
     if (error) {
-      console.error('Fehler beim Laden des Surveys:', error);
       return null;
     }
 
@@ -157,7 +153,6 @@ export class PollService implements OnDestroy {
       .order('name', { ascending: true });
 
     if (error) {
-      console.error('Error categories:', error);
       return;
     }
 
@@ -172,7 +167,6 @@ export class PollService implements OnDestroy {
     .in('poll_id', questionIds);
     
     if (error) {
-      console.error('Error fetching votes:', error);
       return [];
     }
     return data as Vote[];

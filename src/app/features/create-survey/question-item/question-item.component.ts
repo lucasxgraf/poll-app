@@ -30,7 +30,9 @@ export class QuestionItemComponent {
   }
 
   removeOption(oIdx: number) {
-    if (this.optionsArray.length > 2) {
+    if (oIdx < 2) {
+      this.optionsArray.at(oIdx).reset({ label: '' });
+    } else {
       this.optionsArray.removeAt(oIdx);
     }
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { SurveyCardComponent } from '../../../shared/components/survey-card/survey-card';
 import { ButtonComponent } from '../../../shared/ui/button/button';
 import { PollService } from '../../../core/services/poll.service';
@@ -15,10 +15,22 @@ import { Survey } from '../../../shared/models/poll.interface';
 })
 export class Categories implements OnInit {
   private pollService = inject(PollService);
-  
+  private eRef = inject(ElementRef);
+
   currentFilter = signal<'active' | 'past'>('active');
   selectedCategory = signal('All Categories');
   isDropdownOpen = signal(false);
+
+  @ViewChild('dropdownWrapper') dropdownWrapper!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.dropdownWrapper) return;
+    const clickedInside = this.dropdownWrapper.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.isDropdownOpen.set(false);
+    }
+  }
 
   categoryOptions = computed(() => [
     'All Categories', 

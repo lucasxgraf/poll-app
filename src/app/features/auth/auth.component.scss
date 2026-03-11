@@ -39,10 +39,6 @@
 
   &__form {
     @include flex-layout(column, flex-start, stretch, 24px);
-
-    @include respond-below($bp-mobile) {
-      gap: 16px;
-    }
   }
 
   &__actions{

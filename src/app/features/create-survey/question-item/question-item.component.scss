@@ -87,7 +87,7 @@
   input:checked ~ &__visual {
     background-color: $color-accent;
     border-color: $color-accent;
-    background-image: url('/assets/svg/check_checkbox.svg'); 
+    background-image: url('../../../../../public/assets/svg/check_checkbox.svg'); 
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: center;
@@ -115,9 +115,13 @@
 }
 
 .add-answer-btn {
+  align-self: flex-start;
+  
   ::ng-deep .ui-btn--tertiary {
+    width: auto;
     color: $color-bg-white !important;
     @include flex-layout(row, flex-start, center, 8px);
+    padding: 8px 0;
     
     svg path {
       fill: $color-bg-white;

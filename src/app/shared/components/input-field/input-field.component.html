@@ -13,6 +13,7 @@
         [type]="type()" 
         [formControl]="control()" 
         [placeholder]="placeholder()"
+        [attr.maxlength]="maxlength()"
         class="input-field__control">
     </div>
     
@@ -25,7 +26,7 @@
     @if (showError) {
       <span class="input-field__error-text">
         @if (control().errors?.['required']) { This field is required }
-        @if (control().errors?.['email']) { Please enter a valid email address }
+        @if (control().errors?.['strictEmail']) { Enter a valid email address (e.g. name@domain.com) }
         @if (control().errors?.['minlength']) { At least {{ control().errors?.['minlength'].requiredLength }} characters required }
         @if (control().errors?.['invalidDateFormat']) { Format: YYYY-MM-DD }
         @if (control().errors?.['invalidDate']) { Invalid date }

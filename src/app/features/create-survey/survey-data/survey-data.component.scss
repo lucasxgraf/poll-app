@@ -60,7 +60,7 @@
   }
 
   &__field {
-    @include flex-layout(column, flex-start, stretch, 8px);
+    @include flex-layout(column, flex-start, flex-start, 8px);
     position: relative;
   }
 
@@ -114,12 +114,12 @@
 
 .dropdown {
   position: relative;
-  width: 100%;
+  width: fit-content;
+  @include flex-layout(column, flex-start, flex-start);
 
   ::ng-deep .ui-btn--tertiary {
     width: max-content;
-    height: 56px;
-    @include flex-layout(row, center, center, 16px);
+    @include flex-layout(row, center, center, 8px);
     text-decoration: none;
 
     &:hover {
@@ -128,7 +128,6 @@
   }
   
   &__icon {
-    width: 20px;
     transition: transform 0.3s ease;
     
     &--open {
